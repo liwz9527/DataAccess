@@ -30,7 +30,7 @@ namespace Vic.Data
             }
             catch (Exception ex)
             {
-                throw new Exception("Query方法执行错误!" + ex.Message, ex);
+                throw ex;
             }
 
             return lstResult;

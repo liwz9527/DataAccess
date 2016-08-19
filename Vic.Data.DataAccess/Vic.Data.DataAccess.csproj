@@ -8,7 +8,7 @@
     <ProjectGuid>{E42D6950-CF8C-432F-B1F0-ADFEACED5788}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Vic.Data.DataAccess</RootNamespace>
+    <RootNamespace>Vic.Data</RootNamespace>
     <AssemblyName>Vic.Data.DataAccess</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Common.cs" />
     <Compile Include="DataParameter.cs" />
+    <Compile Include="DbSQL.cs" />
     <Compile Include="DbTypes.cs" />
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="EntityDataAccess.cs" />
