@@ -24,9 +24,10 @@ namespace Vic.Data
             try
             {
                 // 定义数据库Reader对象
-                DbDataReader reader = QueryReader(sql);
-                // 由DataReader生成泛型实体
-                lstResult = reader.ToList<T>();
+                using (DbDataReader reader = QueryReader(sql))
+                {
+                    lstResult = reader.ToList<T>();
+                }
             }
             catch (Exception ex)
             {
@@ -184,20 +185,21 @@ namespace Vic.Data
                         }
                     }
                     else if (propType == typeof(int) || propType == typeof(decimal))
-                    {
+                    { 
                         propValue = objValue.ToString();
+
+                        if (propValue == "0")
+                        {
+                            propValue = null;
+                        }
                     }
                     else
                     {
                         propValue = string.Format("'{0}'", objValue.ToString());
                     }
 
-                    if (propValue == null)
-                    {
-                        sqlWhere += string.Format(" and {0}=null", propName);
-                    }
-                    else
-                    {
+                    if (propValue != null)
+                    {  
                         sqlWhere += string.Format(" and {0}={1}", propName, propValue);
                     }
 
