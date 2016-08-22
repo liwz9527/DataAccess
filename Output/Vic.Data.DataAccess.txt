@@ -1,3 +1,0 @@
-﻿1、Oracle访问
-查看GAC：c:\windows\system32\gacutil.exe /l Oracle.DataAccess
-注册GAC：c:\windows\system32\gacutil.exe /i Oracle.DataAccess.dll

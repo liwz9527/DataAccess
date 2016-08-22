@@ -370,8 +370,9 @@ namespace Vic.Data
             MemberType rightType = MemberType.None;
             var left = CreateSqlElements(mce.Object, ref leftType);
             var right = CreateSqlElements(mce.Arguments[0], ref rightType);
-            var oldLeft = AddParas(ref left, right);
-            return string.Format("({0} {1} LIKE '%'+:{2}+'%')", oldLeft, isTure == false ? "  NOT " : null, left);
+            //var oldLeft = AddParas(ref left, right);
+            //return string.Format("({0} {1} LIKE '%'+:{2}+'%')", oldLeft, isTure == false ? "  NOT " : null, left);
+            return string.Format("({0} {1} LIKE '%{2}%')", left, isTure == false ? "  NOT " : null, right);
         }
 
 
