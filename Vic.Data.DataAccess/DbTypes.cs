@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
@@ -8,6 +9,7 @@ namespace Vic.Data
     /// <summary>
     /// 数据类型类
     /// </summary>
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public static class DbTypes
     {
@@ -1250,6 +1252,7 @@ namespace Vic.Data
     /// <summary>
     /// 用于 Vic.Data.DataAccess 中 Parameter 参数 SQL Server 特定的数据类型
     /// </summary>
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public enum SqlDbType
     {
@@ -1390,6 +1393,7 @@ namespace Vic.Data
     /// <summary>
     /// 用于 Vic.Data.DataAccess 中 Parameter 参数 Odbc 特定的数据类型
     /// </summary>
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public enum OdbcType
     {
@@ -1500,6 +1504,7 @@ namespace Vic.Data
     /// <summary>
     /// 用于 Vic.Data.DataAccess 中 Parameter 参数 OleDb 特定的数据类型
     /// </summary>
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public enum OleDbType
     {
@@ -1658,6 +1663,7 @@ namespace Vic.Data
     /// <summary>
     /// 用于 Vic.Data.DataAccess 中 Parameter 参数 Oracle 特定的数据类型
     /// </summary>
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public enum OracleType
     {
@@ -1846,6 +1852,7 @@ namespace Vic.Data
     /// <summary>
     /// 用于 Vic.Data.DataAccess 中 Parameter 参数 OracleClient、OracleManaged 特定的数据类型
     /// </summary>
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public enum OracleClientType
     {

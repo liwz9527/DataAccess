@@ -30,7 +30,7 @@ namespace Vic.Data
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("Query方法执行错误!" + Environment.NewLine + ex.Message, ex);
             }
 
             return lstResult;
@@ -72,7 +72,7 @@ namespace Vic.Data
             }
             catch (Exception ex)
             {
-                throw new Exception("Query方法执行错误!" + ex.Message, ex);
+                throw new Exception("Query方法执行错误!" + Environment.NewLine + ex.Message, ex);
             }
 
             return lstResult;
@@ -115,7 +115,7 @@ namespace Vic.Data
             }
             catch (Exception ex)
             {
-                throw new Exception("Delete方法执行错误!" + ex.Message, ex);
+                throw new Exception("Delete方法执行错误!" + Environment.NewLine + ex.Message, ex);
             }
 
             return updateRows;
@@ -210,7 +210,7 @@ namespace Vic.Data
             }
             catch (Exception ex)
             {
-                throw new Exception("Delete方法执行错误!" + ex.Message, ex);
+                throw new Exception("Delete方法执行错误!" + Environment.NewLine + ex.Message, ex);
             }
 
             return updateRows;

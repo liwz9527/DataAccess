@@ -9,6 +9,9 @@ using System.Linq.Expressions;
 
 namespace Vic.Data
 {
+    /// <summary>
+    /// 扩展方法
+    /// </summary>
     public static class MethodExtension
     {
         /// <summary>
@@ -90,7 +93,7 @@ namespace Vic.Data
         /// <typeparam name="T"></typeparam>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public static List<T> ToList<T>(this IDataReader reader) where T : class,new()
+        public static List<T> ToList<T>(this IDataReader reader) where T : class, new()
         {
             // 定义返回结果
             List<T> result = new List<T>();
@@ -153,7 +156,6 @@ namespace Vic.Data
         /// 获取指定索引的数据并且返回调用委托  
         /// </summary>  
         /// <typeparam name="T">实体类类型</typeparam>  
-        /// <typeparam name="T1">结果类型</typeparam>  
         /// <param name="index">当前对应在DataReader中的索引</param>  
         /// <param name="ProPertyName">对应实体类属性名</param>  
         /// <param name="FieldType">字段类型</param>  
@@ -219,9 +221,9 @@ namespace Vic.Data
                     columnName = pi.Name;
 
                     DataView dv = reader.GetSchemaTable().DefaultView;
-                    dv.RowFilter = "ColumnName= '" + columnName + "'"; 
+                    dv.RowFilter = "ColumnName= '" + columnName + "'";
 
-                    if (dv.Count> 0)
+                    if (dv.Count > 0)
                     {
                         if (!pi.CanWrite)
                         {
@@ -281,7 +283,7 @@ namespace Vic.Data
             {
                 T objT = new T();
 
-                objT = IDataReaderEntityBuilder<T>.CreateBuilder(typeof(T), reader).Build(reader);
+                objT = DataReaderEntityBuilder<T>.CreateBuilder(typeof(T), reader).Build(reader);
 
                 //添加到集合  
                 result.Add(objT);
@@ -300,12 +302,10 @@ namespace Vic.Data
     /// ** 作者：网络
     /// ** 使用说明：
     /// </summary>
-    public class IDataReaderEntityBuilder<T>
+    public class DataReaderEntityBuilder<T>
     {
-        private static readonly MethodInfo getValueMethod =
-        typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
-        private static readonly MethodInfo isDBNullMethod =
-            typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
+        private static readonly MethodInfo getValueMethod = typeof(IDataRecord).GetMethod("get_Item", new Type[] { typeof(int) });
+        private static readonly MethodInfo isDBNullMethod = typeof(IDataRecord).GetMethod("IsDBNull", new Type[] { typeof(int) });
         private delegate T Load(IDataRecord dataRecord);
 
         private Load handler;
@@ -326,10 +326,10 @@ namespace Vic.Data
         /// <param name="type"></param>
         /// <param name="dataRecord"></param>
         /// <returns></returns>
-        public static IDataReaderEntityBuilder<T> CreateBuilder(Type type, IDataRecord dataRecord)
-        {            
+        public static DataReaderEntityBuilder<T> CreateBuilder(Type type, IDataRecord dataRecord)
+        {
             {
-                IDataReaderEntityBuilder<T> dynamicBuilder = new IDataReaderEntityBuilder<T>();
+                DataReaderEntityBuilder<T> dynamicBuilder = new DataReaderEntityBuilder<T>();
                 DynamicMethod method = new DynamicMethod("DynamicCreateEntity", type,
                         new Type[] { typeof(IDataRecord) }, type, true);
                 ILGenerator generator = method.GetILGenerator();
@@ -338,7 +338,7 @@ namespace Vic.Data
                 generator.Emit(OpCodes.Stloc, result);
                 for (int i = 0; i < dataRecord.FieldCount; i++)
                 {
-                    PropertyInfo propertyInfo = type.GetProperty(dataRecord.GetName(i),BindingFlags.IgnoreCase);
+                    PropertyInfo propertyInfo = type.GetProperty(dataRecord.GetName(i), BindingFlags.IgnoreCase);
                     Label endIfLabel = generator.DefineLabel();
                     if (propertyInfo != null && propertyInfo.GetSetMethod() != null)
                     {

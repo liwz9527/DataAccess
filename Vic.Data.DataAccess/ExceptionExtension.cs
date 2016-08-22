@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
 namespace Vic.Data
 {
+    [SuppressMessage("Rule Category", "CS1591")]
     [Serializable]
     public class ProviderTypeNoneException : Exception
     {
@@ -36,6 +38,7 @@ namespace Vic.Data
         {
             this.dbProviderName = dbProviderName;
         }
+
 
         public ProviderTypeNoneException(string dbProviderName, string message, Exception innerException)
             : base(message, innerException)//调用基类的构造器
