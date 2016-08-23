@@ -128,7 +128,29 @@ namespace Vic.Data
         /// <typeparam name="T"></typeparam> 
         /// <param name="entity"></param>
         /// <returns></returns>
-        public int Delete<T>(dynamic entity) where T : class, new()
+        public int Delete<T>(T entity) where T : class, new()
+        {
+            if (entity == null)
+            {
+                throw new ArgumentNullException("entity参数不能为空！");
+            }
+
+            // 取得表名
+            string tableName = typeof(T).Name;
+
+            // 删除表名
+            int updateRows = Delete(entity, tableName);
+
+            return updateRows;
+        }
+
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="tableName"></param>
+        /// <returns></returns>
+        public int Delete(dynamic entity,string tableName)
         {
             if (entity == null)
             {
@@ -140,12 +162,8 @@ namespace Vic.Data
 
             //(T)Convert.ChangeType(propValue, typeof(T));
 
-
-
             try
             {
-                // 获取表名
-                string tableName = typeof(T).Name;
                 // 获取类型
                 Type type = entity.GetType();
                 // 查询条件

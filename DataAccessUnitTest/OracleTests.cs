@@ -87,7 +87,7 @@ namespace DataAccessTest.UnitTests
 
             //根据动态类型删除数据
             var product = new { ProductId = 104 };
-            updateRows = dbAccess.Delete<Product>(product);
+            updateRows = dbAccess.Delete(product, "Product");
             Assert.AreEqual(updateRows, 1);
         }
     }
