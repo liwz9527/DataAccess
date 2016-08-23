@@ -1,19 +1,33 @@
-﻿using System;
+﻿#define NUNIT0
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using NUnit.Framework;
 using Vic.Data;
 using System.Configuration;
+#if !NUNIT 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Category = Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute;
+#else
+using NUnit.Framework; 
+using TestClass = NUnit.Framework.TestFixtureAttribute; 
+using TestMethod = NUnit.Framework.TestAttribute; 
+using TestInitialize = NUnit.Framework.SetUpAttribute; 
+using TestCleanup = NUnit.Framework.TearDownAttribute; 
+using ClassInitialize = NUnit.Framework.TestFixtureSetUpAttribute; 
+using ClassCleanup = NUnit.Framework.TestFixtureTearDownAttribute; 
+using TestContext = System.Object;  
+#endif
 
 namespace DataAccessTest.UnitTests
 {
-    [TestFixture]
+    [TestClass]
     public class OracleTests
-    {
+    { 
+        // 定义数据库连接
         private DataAccess dbAccess = null;
 
-        [SetUp]
+        [TestInitialize]
         public void Setup()
         {
             // 获取数据库连接
@@ -27,7 +41,7 @@ namespace DataAccessTest.UnitTests
         /// <summary>
         /// 检测是否可用
         /// </summary>
-        [Test] 
+        [TestMethod] 
         public void TestConnect()
         {
             bool isCheck = dbAccess.CheckConn(); 
@@ -40,7 +54,7 @@ namespace DataAccessTest.UnitTests
         /// <summary>
         /// 测试表达式查询
         /// </summary>
-        [Test]
+        [TestMethod]
         public void TestQuery()
         {
             // 查询数据
@@ -51,7 +65,7 @@ namespace DataAccessTest.UnitTests
             Assert.AreEqual(lstProduct.First().ProductId, 10);
         }
 
-        [Test]
+        [TestMethod]
         public void TestDelete()
         {
             // 判断是否写入测试数据
