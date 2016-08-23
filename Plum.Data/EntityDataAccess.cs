@@ -59,7 +59,7 @@ namespace Vic.Data
                 // 排序
                 string ordering = string.Empty;
 
-                ExpressionToSql expression = new ExpressionToSql();
+                Oracle.SqlGenerator expression = new Oracle.SqlGenerator();
 
                 sqlWhere = expression.GenerateSql(predicate);
 
@@ -105,7 +105,7 @@ namespace Vic.Data
                 // 排序
                 string ordering = string.Empty;
 
-                ExpressionToSql expression = new ExpressionToSql();
+                Oracle.SqlGenerator expression = new Oracle.SqlGenerator();
 
                 sqlWhere = expression.GenerateSql(predicate);
 

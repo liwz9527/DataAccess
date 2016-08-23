@@ -53,13 +53,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Vic.Data.DataAccess\Vic.Data.DataAccess.csproj">
-      <Project>{e42d6950-cf8c-432f-b1f0-adfeaced5788}</Project>
-      <Name>Vic.Data.DataAccess</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\Plum.Data\Plum.Data.csproj">
+      <Project>{e42d6950-cf8c-432f-b1f0-adfeaced5788}</Project>
+      <Name>Plum.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

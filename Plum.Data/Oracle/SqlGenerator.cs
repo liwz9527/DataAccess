@@ -7,18 +7,18 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Vic.Data
+namespace Vic.Data.Oracle
 {
     /// <summary>
     /// 拉姆达表达式解析类
     /// </summary>
-    public class ExpressionToSql
+    public class SqlGenerator
     {
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="sameIndex"></param>
-        public ExpressionToSql(int sameIndex = 1)
+        public SqlGenerator(int sameIndex = 1)
         {
             this.SameIndex = sameIndex;
         }
@@ -35,9 +35,9 @@ namespace Vic.Data
         /// </summary>
         /// <param name="re"></param>
         /// <param name="exp"></param>
-        public void Expression(ExpressionToSql re, Expression exp)
+        public void Expression(SqlGenerator re, Expression exp)
         {
-            ExpressionToSql.MemberType type = ExpressionToSql.MemberType.None;
+            SqlGenerator.MemberType type = SqlGenerator.MemberType.None;
             var expStr = exp.ToString();
             var isNotBool = !expStr.Contains("True") && !expStr.Contains("False");
             var isContainsNot = expStr.Contains("Not");
@@ -77,7 +77,7 @@ namespace Vic.Data
         {
             string sqlWhere = string.Empty;
 
-            ExpressionToSql.MemberType type = ExpressionToSql.MemberType.None;
+            SqlGenerator.MemberType type = SqlGenerator.MemberType.None;
             var expStr = exp.ToString();
             var isNotBool = !expStr.Contains("True") && !expStr.Contains("False");
             var isContainsNot = expStr.Contains("Not");

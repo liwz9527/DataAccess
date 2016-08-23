@@ -86,12 +86,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Vic.Data.DataAccess\Vic.Data.DataAccess.csproj">
-      <Project>{E42D6950-CF8C-432F-B1F0-ADFEACED5788}</Project>
-      <Name>Vic.Data.DataAccess</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Drivers\SQLite\System.Data.SQLite.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -101,6 +95,12 @@
     <Content Include="Drivers\SQLite\System.Data.SQLite.Linq.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plum.Data\Plum.Data.csproj">
+      <Project>{e42d6950-cf8c-432f-b1f0-adfeaced5788}</Project>
+      <Name>Plum.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
