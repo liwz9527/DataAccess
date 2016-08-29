@@ -23,6 +23,8 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <DocumentationFile>..\Output\Vic.Data.DataAccess.XML</DocumentationFile>
+    <NoWarn>
+    </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -48,17 +50,33 @@
     <Compile Include="DbTypes.cs" />
     <Compile Include="EntityAttribute.cs" />
     <Compile Include="EntityDataAccess.cs" />
-    <Compile Include="EntityInfo.cs" />
+    <Compile Include="EntityDescribeInfo.cs" />
     <Compile Include="ExceptionExtension.cs" />
+    <Compile Include="Expression2Sql\BaseExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Enums.cs" />
+    <Compile Include="Expression2Sql\Expre2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2SqlCore.cs" />
+    <Compile Include="Expression2Sql\Expression2SqlEx.cs" />
+    <Compile Include="Expression2Sql\Expression2SqlProvider.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\BinaryExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\ConstantExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\MemberExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\MethodCallExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\NewArrayExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\NewExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\UnaryExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\IExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\SqlPack.cs" />
     <Compile Include="MethodExtension.cs" />
-    <Compile Include="Oracle\SqlGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccess.cs" />
     <Compile Include="IDataAccess.cs" />
+    <Compile Include="SqlGeneratorBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DbType.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

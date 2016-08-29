@@ -9,7 +9,7 @@ namespace Vic.Data
     /// 实体
     /// </summary>
     [Serializable]
-    internal class EntityInfo
+    internal class EntityDescribeInfo
     {
         private string _tableName;
         /// <summary>

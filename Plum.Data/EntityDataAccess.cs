@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Expression2Sql;
+using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.Common;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace Vic.Data
 {
@@ -33,93 +31,7 @@ namespace Vic.Data
             {
                 throw new Exception("Query方法执行错误!" + Environment.NewLine + ex.Message, ex);
             }
-
             return lstResult;
-        }
-
-        /// <summary>
-        /// 查询数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public List<T> Query<T>(Expression<Func<T, bool>> predicate) where T : class, new()
-        {
-            // 定义返回参数
-            List<T> lstResult = null;
-
-            try
-            {
-                Type type = typeof(T);
-
-                // 表名
-                string tableName = type.Name;
-                // 查询条件
-                string sqlWhere = string.Empty;
-                // 排序
-                string ordering = string.Empty;
-
-                Oracle.SqlGenerator expression = new Oracle.SqlGenerator();
-
-                sqlWhere = expression.GenerateSql(predicate);
-
-                // 查询语句
-                string querySql = string.Format("select * from {0} where 1=1 {1}", tableName, sqlWhere);
-
-                using (DbDataReader reader = QueryReader(querySql))
-                {
-                    lstResult = reader.ToList<T>();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Query方法执行错误!" + Environment.NewLine + ex.Message, ex);
-            }
-
-            return lstResult;
-        }
-
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
-        public int Delete<T>(Expression<Func<T, bool>> predicate) where T : class, new()
-        {
-            if (predicate == null)
-            {
-                throw new ArgumentNullException("predicate参数不能为空！");
-            }
-
-            int updateRows = 0;
-
-            try
-            {
-                Type type = typeof(T);
-
-                // 表名
-                string tableName = type.Name;
-                // 查询条件
-                string sqlWhere = string.Empty;
-                // 排序
-                string ordering = string.Empty;
-
-                Oracle.SqlGenerator expression = new Oracle.SqlGenerator();
-
-                sqlWhere = expression.GenerateSql(predicate);
-
-                // 查询语句
-                string querySql = string.Format("delete from {0} where 1=1 {1}", tableName, sqlWhere);
-
-                updateRows = ExecuteNonQuery(querySql);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Delete方法执行错误!" + Environment.NewLine + ex.Message, ex);
-            }
-
-            return updateRows;
         }
 
         /// <summary>
@@ -128,7 +40,7 @@ namespace Vic.Data
         /// <typeparam name="T"></typeparam> 
         /// <param name="entity"></param>
         /// <returns></returns>
-        public int Delete<T>(T entity) where T : class, new()
+        public int Delete1<T>(T entity) where T : class, new()
         {
             if (entity == null)
             {
@@ -235,5 +147,151 @@ namespace Vic.Data
 
             return updateRows;
         }
+
+        /// <summary>
+        /// 获取DbProviderType对应的DatabaseType
+        /// </summary>
+        /// <param name="dbProviderType"></param>
+        /// <returns></returns>
+        internal Expression2Sql.DatabaseType DatabaseType
+        {
+            get
+            {
+                switch (DbProviderType)
+                {
+                    case DbProviderType.SqlServer:
+                    case DbProviderType.SqlServerCe_3_5:
+                        return Expression2Sql.DatabaseType.SQLServer;
+                    case DbProviderType.Oracle:
+                    case DbProviderType.OracleClient:
+                    case DbProviderType.OracleManaged:
+                        return Expression2Sql.DatabaseType.Oracle;
+                    case DbProviderType.SQLite:
+                    case DbProviderType.SQLiteEF6:
+                    case DbProviderType.SQLiteLinq:
+                        return Expression2Sql.DatabaseType.SQLite;
+                    case DbProviderType.MySql:
+                        return Expression2Sql.DatabaseType.MySQL;
+                    default:
+                        throw new Exception(string.Format("{0}的扩展方法暂不支持数据库类型\"{1}\".", this.GetType().Name, DbProviderType.ToString()));
+                }
+            }
+        }
+
+        /// <summary>
+        /// 删除T对应表的全部数据
+        /// </summary>
+        /// <typeparam name="T">表实体</typeparam>
+        /// <returns></returns>
+        public int Delete<T>() where T : class, new()
+        {
+            int result = 0;
+
+            try
+            {
+                Expre2Sql.Init(DatabaseType);
+                string sqlStr = Expre2Sql.Delete<T>().SqlStr;
+                result = ExecuteNonQuery(sqlStr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Delete方法执行错误!" + Environment.NewLine + ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 根据条件删除T对应表的数据
+        /// </summary>
+        /// <typeparam name="T">表实体</typeparam>
+        /// <param name="predicate">条件</param>
+        /// <returns></returns>
+        public int Delete<T>(Expression<Func<T, bool>> predicate) where T : class, new()
+        {
+            if (predicate == null)
+            {
+                throw new ArgumentNullException("predicate参数不能为空！");
+            }
+
+            int result = 0;
+
+            try
+            {
+                Expre2Sql.Init(DatabaseType);
+                string sqlStr = Expre2Sql.Delete<T>().Where(predicate).SqlStr;
+                result = ExecuteNonQuery(sqlStr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Delete方法执行错误!" + Environment.NewLine + ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 更新T对应表的全部数据
+        /// </summary>
+        /// <typeparam name="T">表实体</typeparam>
+        /// <param name="expression">列值</param>
+        /// <returns></returns>
+        public int Update<T>(Expression<Func<object>> expression)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException("expression参数不能为空！");
+            }
+
+            int result = 0;
+
+            try
+            {
+                Expre2Sql.Init(DatabaseType);
+                string sqlStr = Expre2Sql.Update<T>(expression).SqlStr;
+                result = ExecuteNonQuery(sqlStr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Update方法执行错误!" + Environment.NewLine + ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 根据条件更新T对应表的数据
+        /// </summary>
+        /// <typeparam name="T">表实体</typeparam>
+        /// <param name="expression">列值</param>
+        /// <param name="predicate">条件</param>
+        /// <returns></returns>
+        public int Update<T>(Expression<Func<object>> expression, Expression<Func<T, bool>> predicate)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException("expression参数不能为空！");
+            }
+
+            if (predicate == null)
+            {
+                throw new ArgumentNullException("predicate参数不能为空！");
+            }
+
+            int result = 0;
+
+            try
+            {
+                Expre2Sql.Init(DatabaseType);
+                string sqlStr = Expre2Sql.Update<T>(expression).Where(predicate).SqlStr;
+                result = ExecuteNonQuery(sqlStr);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Update方法执行错误!" + Environment.NewLine + ex.Message, ex);
+            }
+
+            return result;
+        }        
     }
 }
