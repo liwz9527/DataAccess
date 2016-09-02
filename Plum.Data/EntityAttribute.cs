@@ -98,7 +98,7 @@ namespace Vic.Data
         /// <summary>
         /// 返回一个布尔值，标示是否为标识。
         /// </summary>
-        public bool _IsIdentity
+        public bool IsIdentity
         {
             get { return this._isIdentity; }
         }

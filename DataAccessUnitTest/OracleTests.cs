@@ -96,13 +96,14 @@ namespace DataAccessTest.UnitTests
             // 删除指定实体
             Product entity = new Product();
             entity.ProductId = 103;
-            updateRows = dbAccess.Delete1<Product>(entity);
+            updateRows = dbAccess.Delete<Product>(entity);
             Assert.AreEqual(updateRows, 1);
 
             //根据动态类型删除数据
             var product = new { ProductId = 104 };
             updateRows = dbAccess.Delete(product, "Product");
             Assert.AreEqual(updateRows, 1);
+            
         }
     }
 

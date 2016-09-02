@@ -49,6 +49,7 @@
     <Compile Include="DbSQL.cs" />
     <Compile Include="DbTypes.cs" />
     <Compile Include="EntityAttribute.cs" />
+    <Compile Include="EntityAttributeAnalyze.cs" />
     <Compile Include="EntityDataAccess.cs" />
     <Compile Include="EntityDescribeInfo.cs" />
     <Compile Include="ExceptionExtension.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="Expression2Sql\Expression2SqlProvider.cs" />
     <Compile Include="Expression2Sql\Expression2Sql\BinaryExpression2Sql.cs" />
     <Compile Include="Expression2Sql\Expression2Sql\ConstantExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression2Sql\MemberInitExpression2Sql.cs" />
     <Compile Include="Expression2Sql\Expression2Sql\MemberExpression2Sql.cs" />
     <Compile Include="Expression2Sql\Expression2Sql\MethodCallExpression2Sql.cs" />
     <Compile Include="Expression2Sql\Expression2Sql\NewArrayExpression2Sql.cs" />

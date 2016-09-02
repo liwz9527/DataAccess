@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
+using Vic.Data;
 
 namespace Expression2Sql
 {
@@ -358,11 +359,12 @@ namespace Expression2Sql
 
 		public Expression2SqlCore<T> Update(Expression<Func<object>> expression = null)
 		{
-			this._sqlPack.Clear();
+            this._sqlPack.Clear();
 			this._sqlPack.IsSingleTable = true;
-			this._sqlPack += "update " + typeof(T).Name + " set ";
-			Expression2SqlProvider.Update(expression.Body, this._sqlPack);
+            //this._sqlPack += "update " + typeof(T).Name + " set ";
+            this._sqlPack += "update " + typeof(T).GetEntityTableName() + " set ";
+            Expression2SqlProvider.Update(expression.Body, this._sqlPack);
 			return this;
 		}
-	}
+    }
 }

@@ -420,9 +420,9 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        public void ExecuteSqlTran(int commits,params DbSQL[] sqls)
+        public void ExecuteSqlTran(int commits, params DbSQL[] sqls)
         {
-            ExecuteSqlTran(commits,sqls.ToList());
+            ExecuteSqlTran(commits, sqls.ToList());
         }
 
         /// <summary>
@@ -431,7 +431,7 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        public void ExecuteSqlTran(int commits,IList<DbSQL> sqls)
+        public void ExecuteSqlTran(int commits, IList<DbSQL> sqls)
         {
             using (DbConnection conn = CreateConnection())
             {

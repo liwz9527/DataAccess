@@ -94,8 +94,9 @@ namespace Expression2Sql
 			}
 			if (expression is MemberInitExpression)
 			{
-				throw new NotImplementedException("未实现的MemberInitExpression2Sql");
-			}
+				//throw new NotImplementedException("未实现的MemberInitExpression2Sql");
+                return new MemberInitExpression2Sql();
+            }
 			if (expression is MethodCallExpression)
 			{
 				return new MethodCallExpression2Sql();
