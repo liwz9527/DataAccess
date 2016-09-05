@@ -63,6 +63,37 @@ namespace Vic.Data
         }
 
         /// <summary>
+        /// 向T对应的数据库表中增加一条记录
+        /// </summary>
+        /// <typeparam name="T">实体</typeparam>
+        /// <param name="expression">列值</param>
+        /// <returns></returns>
+        public int Add<T>(Expression<Func<object>> expression)
+        {
+            if (expression == null)
+            {
+                throw new ArgumentNullException("expression参数不能为空！");
+            }
+
+            int result = 0;
+
+            try
+            {
+                Expre2Sql.Init(DatabaseType);
+                SqlCore<T> sql = Expre2Sql.Insert<T>(expression);
+                string sqlStr = sql.SqlStr;
+                List<DbParameter> paras = GetDbParameters(sql.DbParams);
+                result = ExecuteNonQuery(sqlStr, paras);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Add方法执行错误!" + Environment.NewLine + ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// 删除T对应表的全部数据
         /// </summary>
         /// <typeparam name="T">表实体</typeparam>
@@ -248,8 +279,10 @@ namespace Vic.Data
             try
             {
                 Expre2Sql.Init(DatabaseType);
-                string sqlStr = Expre2Sql.Update<T>(expression).SqlStr;
-                result = ExecuteNonQuery(sqlStr);
+                SqlCore<T> sql = Expre2Sql.Update<T>(expression);
+                string sqlStr = sql.SqlStr;
+                List<DbParameter> paras = GetDbParameters(sql.DbParams);
+                result = ExecuteNonQuery(sqlStr, paras);
             }
             catch (Exception ex)
             {
