@@ -17,30 +17,36 @@
 #endregion
 
 using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
 
 namespace Expression2Sql
 {
     [SuppressMessage("Rule Category", "CS1591")]
-    class NewArrayExpression2Sql : BaseExpression2Sql<NewArrayExpression>
+    public static class SqlExtension
 	{
-		protected override SqlPack In(NewArrayExpression expression, SqlPack sqlPack)
+		public static bool Like(this object obj, string value)
 		{
-			sqlPack += "(";
+			return true;
+		}
 
-			foreach (Expression expressionItem in expression.Expressions)
-			{
-				Expression2SqlProvider.In(expressionItem, sqlPack);
-			}
+		/// <summary>
+		/// like '% _ _ _'
+		/// </summary>
+		public static bool LikeLeft(this object obj, string value)
+		{
+			return true;
+		}
 
-			if (sqlPack.Sql[sqlPack.Sql.Length - 1] == ',')
-			{
-				sqlPack.Sql.Remove(sqlPack.Sql.Length - 1, 1);
-			}
+		/// <summary>
+		/// like '_ _ _ %'
+		/// </summary>
+		public static bool LikeRight(this object obj, string value)
+		{
+			return true;
+		}
 
-			sqlPack += ")";
-
-			return sqlPack;
+		public static bool In<T>(this object obj, params T[] ary)
+		{
+			return true;
 		}
 	}
 }

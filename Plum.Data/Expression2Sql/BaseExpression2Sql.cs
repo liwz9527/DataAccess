@@ -25,6 +25,10 @@ namespace Expression2Sql
     [SuppressMessage("Rule Category", "CS1591")]
     public abstract class BaseExpression2Sql<T> : IExpression2Sql where T : Expression
 	{
+        protected virtual SqlPack Insert(T expression, SqlPack sqlPack)
+        {
+            throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Insert方法");
+        }
 		protected virtual SqlPack Update(T expression, SqlPack sqlPack)
 		{
 			throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Update方法");
@@ -74,8 +78,12 @@ namespace Expression2Sql
 			throw new NotImplementedException("未实现" + typeof(T).Name + "2Sql.Sum方法");
 		}
 
+        public SqlPack Insert(Expression expression, SqlPack sqlPack)
+        {
+            return Insert((T)expression, sqlPack);
+        }
 
-		public SqlPack Update(Expression expression, SqlPack sqlPack)
+        public SqlPack Update(Expression expression, SqlPack sqlPack)
 		{
 			return Update((T)expression, sqlPack);
 		}

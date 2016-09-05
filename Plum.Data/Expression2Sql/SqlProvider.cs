@@ -23,7 +23,7 @@ using System.Linq.Expressions;
 namespace Expression2Sql
 {
     [SuppressMessage("Rule Category", "CS1591")]
-    internal class Expression2SqlProvider
+    internal class SqlProvider
 	{
 		private static IExpression2Sql GetExpression2Sql(Expression expression)
 		{
@@ -136,10 +136,15 @@ namespace Expression2Sql
 			throw new NotImplementedException("未实现的Expression2Sql");
 		}
 
-		public static void Update(Expression expression, SqlPack sqlPack)
+        public static void Insert(Expression experssion, SqlPack sqlPack)
+        {
+            GetExpression2Sql(experssion).Insert(experssion, sqlPack);
+        }
+
+        public static void Update(Expression expression, SqlPack sqlPack)
 		{
 			GetExpression2Sql(expression).Update(expression, sqlPack);
-		}
+		} 
 
 		public static void Select(Expression expression, SqlPack sqlPack)
 		{

@@ -76,10 +76,10 @@ namespace Expression2Sql
 
 		protected override SqlPack Join(BinaryExpression expression, SqlPack sqlPack)
 		{
-			Expression2SqlProvider.Join(expression.Left, sqlPack);
+			SqlProvider.Join(expression.Left, sqlPack);
 			int operatorIndex = sqlPack.Sql.Length;
 
-			Expression2SqlProvider.Join(expression.Right, sqlPack);
+			SqlProvider.Join(expression.Right, sqlPack);
 			int sqlLength = sqlPack.Sql.Length;
 
 			if (sqlLength - operatorIndex == 5 && sqlPack.ToString().EndsWith("null"))
@@ -96,10 +96,10 @@ namespace Expression2Sql
 
 		protected override SqlPack Where(BinaryExpression expression, SqlPack sqlPack)
 		{
-			Expression2SqlProvider.Where(expression.Left, sqlPack);
+			SqlProvider.Where(expression.Left, sqlPack);
 			int signIndex = sqlPack.Length;
 
-			Expression2SqlProvider.Where(expression.Right, sqlPack);
+			SqlProvider.Where(expression.Right, sqlPack);
 			int sqlLength = sqlPack.Length;
 
 			if (sqlLength - signIndex == 5 && sqlPack.ToString().EndsWith("null"))

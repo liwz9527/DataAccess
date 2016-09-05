@@ -217,10 +217,10 @@ namespace DataAccessTest.UnitTests
 
             Printf(
                  Expre2Sql.Delete<UserInfo>().
-                           Where(u => u.Id >1),
+                           Where(u => u.Id > 1),
                  "根据where条件删除指定表记录"
             );
-            
+
             Printf(
                  Expre2Sql.Update<UserInfo>(() => new UserInfo { Name = "", Sex = 1, Email = "123456@qq.com" }),
                  "全表更新"
@@ -232,12 +232,21 @@ namespace DataAccessTest.UnitTests
                  "根据where条件更新指定表记录"
             );
 
+            Printf(
+            Expre2Sql.Insert<UserInfo>(() => new UserInfo { Name = "", Sex = 1, Email = "123456@qq.com" }),
+                 "插入"
+            );
+
+            Printf(
+            Expre2Sql.Insert<UserInfo>(() => new { Name = "", Sex = 1, Email = "123456@qq.com" }),
+                 "插入"
+            );
 
             //to be continued...
 
         }
 
-        private static void Printf<T>(Expression2SqlCore<T> expression2Sql, string description = "")
+        private static void Printf<T>(SqlCore<T> expression2Sql, string description = "")
         {
             if (!string.IsNullOrWhiteSpace(description))
             {

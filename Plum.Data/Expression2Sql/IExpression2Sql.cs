@@ -24,7 +24,9 @@ namespace Expression2Sql
     [SuppressMessage("Rule Category", "CS1591")]
     public interface IExpression2Sql
 	{
-		SqlPack Update(Expression expression, SqlPack sqlPack);
+        SqlPack Insert(Expression experssion, SqlPack sqlPack);
+
+        SqlPack Update(Expression expression, SqlPack sqlPack);
 
 		SqlPack Select(Expression expression, SqlPack sqlPack);
 

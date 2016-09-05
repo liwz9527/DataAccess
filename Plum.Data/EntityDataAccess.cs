@@ -103,8 +103,10 @@ namespace Vic.Data
             try
             {
                 Expre2Sql.Init(DatabaseType);
-                string sqlStr = Expre2Sql.Delete<T>().Where(predicate).SqlStr;
-                result = ExecuteNonQuery(sqlStr);
+                SqlCore<T> sql = Expre2Sql.Delete<T>().Where(predicate);
+                string sqlStr = sql.SqlStr;
+                List<DbParameter> paras = GetDbParameters(sql.DbParams);
+                result = ExecuteNonQuery(sqlStr, paras);
             }
             catch (Exception ex)
             {
@@ -281,8 +283,10 @@ namespace Vic.Data
             try
             {
                 Expre2Sql.Init(DatabaseType);
-                string sqlStr = Expre2Sql.Update<T>(expression).Where(predicate).SqlStr;
-                result = ExecuteNonQuery(sqlStr);
+                SqlCore<T> sql = Expre2Sql.Update<T>(expression).Where(predicate);
+                string sqlStr = sql.SqlStr;
+                List<DbParameter> paras = GetDbParameters(sql.DbParams);
+                result = ExecuteNonQuery(sqlStr, paras);
             }
             catch (Exception ex)
             {
@@ -290,6 +294,24 @@ namespace Vic.Data
             }
 
             return result;
-        }        
+        }
+
+        /// <summary>
+        /// 获取参数列表
+        /// </summary>
+        /// <param name="dbParams">参数集合</param>
+        /// <returns></returns>
+        private List<DbParameter> GetDbParameters(Dictionary<string, object> dbParams)
+        {
+            List<DbParameter> paras = new List<DbParameter>();
+            foreach (KeyValuePair<string, object> item in dbParams)
+            {
+                DbParameter dbParam = CreateParameter();
+                dbParam.ParameterName = item.Key;
+                dbParam.Value = item.Value;
+                paras.Add(dbParam);
+            }
+            return paras;
+        }
     }
 }

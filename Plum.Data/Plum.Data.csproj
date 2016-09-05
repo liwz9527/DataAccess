@@ -56,24 +56,23 @@
     <Compile Include="Expression2Sql\BaseExpression2Sql.cs" />
     <Compile Include="Expression2Sql\Enums.cs" />
     <Compile Include="Expression2Sql\Expre2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2SqlCore.cs" />
-    <Compile Include="Expression2Sql\Expression2SqlEx.cs" />
-    <Compile Include="Expression2Sql\Expression2SqlProvider.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\BinaryExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\ConstantExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\MemberInitExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\MemberExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\MethodCallExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\NewArrayExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\NewExpression2Sql.cs" />
-    <Compile Include="Expression2Sql\Expression2Sql\UnaryExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\SqlCore.cs" />
+    <Compile Include="Expression2Sql\SqlExtension.cs" />
+    <Compile Include="Expression2Sql\SqlProvider.cs" />
+    <Compile Include="Expression2Sql\Expression\BinaryExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\ConstantExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\MemberInitExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\MemberExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\MethodCallExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\NewArrayExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\NewExpression2Sql.cs" />
+    <Compile Include="Expression2Sql\Expression\UnaryExpression2Sql.cs" />
     <Compile Include="Expression2Sql\IExpression2Sql.cs" />
     <Compile Include="Expression2Sql\SqlPack.cs" />
     <Compile Include="MethodExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccess.cs" />
     <Compile Include="IDataAccess.cs" />
-    <Compile Include="SqlGeneratorBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DbType.txt" />

@@ -32,80 +32,85 @@ namespace Expression2Sql
 			DatabaseType = dbType;
 		}
 
-		public static Expression2SqlCore<T> Delete<T>()
+        public static SqlCore<T> Insert<T>(Expression<Func<object>> expression = null)
+        {
+            return new SqlCore<T>(DatabaseType).Insert(expression);
+        }
+
+        public static SqlCore<T> Delete<T>()
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Delete();
+			return new SqlCore<T>(DatabaseType).Delete();
 		}
 
-		public static Expression2SqlCore<T> Update<T>(Expression<Func<object>> expression = null)
+		public static SqlCore<T> Update<T>(Expression<Func<object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Update(expression);
+			return new SqlCore<T>(DatabaseType).Update(expression);
 		}
 
-		public static Expression2SqlCore<T> Select<T>(Expression<Func<T, object>> expression = null)
+		public static SqlCore<T> Select<T>(Expression<Func<T, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2>(Expression<Func<T, T2, object>> expression = null)
+		public static SqlCore<T> Select<T, T2>(Expression<Func<T, T2, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3>(Expression<Func<T, T2, T3, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3>(Expression<Func<T, T2, T3, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4>(Expression<Func<T, T2, T3, T4, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4, T5>(Expression<Func<T, T2, T3, T4, T5, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4, T5, T6>(Expression<Func<T, T2, T3, T4, T5, T6, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7>(Expression<Func<T, T2, T3, T4, T5, T6, T7, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7, T8>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7, T8, T9>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
-		public static Expression2SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression = null)
+		public static SqlCore<T> Select<T, T2, T3, T4, T5, T6, T7, T8, T9, T10>(Expression<Func<T, T2, T3, T4, T5, T6, T7, T8, T9, T10, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Select(expression);
-		}
-
-		public static Expression2SqlCore<T> Max<T>(Expression<Func<T, object>> expression)
-		{
-			return new Expression2SqlCore<T>(DatabaseType).Max(expression);
+			return new SqlCore<T>(DatabaseType).Select(expression);
 		}
 
-		public static Expression2SqlCore<T> Min<T>(Expression<Func<T, object>> expression)
+		public static SqlCore<T> Max<T>(Expression<Func<T, object>> expression)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Min(expression);
+			return new SqlCore<T>(DatabaseType).Max(expression);
 		}
 
-		public static Expression2SqlCore<T> Avg<T>(Expression<Func<T, object>> expression)
+		public static SqlCore<T> Min<T>(Expression<Func<T, object>> expression)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Avg(expression);
+			return new SqlCore<T>(DatabaseType).Min(expression);
 		}
 
-		public static Expression2SqlCore<T> Count<T>(Expression<Func<T, object>> expression = null)
+		public static SqlCore<T> Avg<T>(Expression<Func<T, object>> expression)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Count(expression);
+			return new SqlCore<T>(DatabaseType).Avg(expression);
 		}
 
-		public static Expression2SqlCore<T> Sum<T>(Expression<Func<T, object>> expression)
+		public static SqlCore<T> Count<T>(Expression<Func<T, object>> expression = null)
 		{
-			return new Expression2SqlCore<T>(DatabaseType).Sum(expression);
+			return new SqlCore<T>(DatabaseType).Count(expression);
+		}
+
+		public static SqlCore<T> Sum<T>(Expression<Func<T, object>> expression)
+		{
+			return new SqlCore<T>(DatabaseType).Sum(expression);
 		}
 	}
 }

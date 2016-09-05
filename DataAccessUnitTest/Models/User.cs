@@ -11,12 +11,15 @@ namespace Expression2SqlTest
     {
         [Identity]
         public int Id { get; set; }
+
+        [Field("xb")]
         public int Sex { get; set; }
 
         [Primarykey]
+        [Field("xm")]
         public string Name { get; set; }
 
-        [Field("email1")]
+        [Field("yx")]
         public string Email { get; set; }
     }
 }

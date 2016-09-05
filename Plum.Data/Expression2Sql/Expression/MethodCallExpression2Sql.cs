@@ -36,20 +36,20 @@ namespace Expression2Sql
 
 		private static void In(MethodCallExpression expression, SqlPack sqlPack)
 		{
-			Expression2SqlProvider.Where(expression.Arguments[0], sqlPack);
+			SqlProvider.Where(expression.Arguments[0], sqlPack);
 			sqlPack += " in";
-			Expression2SqlProvider.In(expression.Arguments[1], sqlPack);
+			SqlProvider.In(expression.Arguments[1], sqlPack);
 		}
 
 		private static void Like(MethodCallExpression expression, SqlPack sqlPack)
 		{
 			if (expression.Object != null)
 			{
-				Expression2SqlProvider.Where(expression.Object, sqlPack);
+				SqlProvider.Where(expression.Object, sqlPack);
 			}
-			Expression2SqlProvider.Where(expression.Arguments[0], sqlPack);
+			SqlProvider.Where(expression.Arguments[0], sqlPack);
 			sqlPack += " like '%' +";
-			Expression2SqlProvider.Where(expression.Arguments[1], sqlPack);
+			SqlProvider.Where(expression.Arguments[1], sqlPack);
 			sqlPack += " + '%'";
 		}
 
@@ -57,22 +57,22 @@ namespace Expression2Sql
 		{
 			if (expression.Object != null)
 			{
-				Expression2SqlProvider.Where(expression.Object, sqlPack);
+				SqlProvider.Where(expression.Object, sqlPack);
 			}
-			Expression2SqlProvider.Where(expression.Arguments[0], sqlPack);
+			SqlProvider.Where(expression.Arguments[0], sqlPack);
 			sqlPack += " like '%' +";
-			Expression2SqlProvider.Where(expression.Arguments[1], sqlPack);
+			SqlProvider.Where(expression.Arguments[1], sqlPack);
 		}
 
 		private static void LikeRight(MethodCallExpression expression, SqlPack sqlPack)
 		{
 			if (expression.Object != null)
 			{
-				Expression2SqlProvider.Where(expression.Object, sqlPack);
+				SqlProvider.Where(expression.Object, sqlPack);
 			}
-			Expression2SqlProvider.Where(expression.Arguments[0], sqlPack);
+			SqlProvider.Where(expression.Arguments[0], sqlPack);
 			sqlPack += " like ";
-			Expression2SqlProvider.Where(expression.Arguments[1], sqlPack);
+			SqlProvider.Where(expression.Arguments[1], sqlPack);
 			sqlPack += " + '%'";
 		}
 

@@ -19,6 +19,7 @@ using System;
 * limitations under the License.
 */
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -29,12 +30,39 @@ namespace Expression2Sql
     [SuppressMessage("Rule Category", "CS1591")]
     class MemberInitExpression2Sql : BaseExpression2Sql<MemberInitExpression>
 	{
+        protected override SqlPack Insert(MemberInitExpression expression, SqlPack sqlPack)
+        {
+            List<string> fields = new List<string>();
+            List<object> values = new List<object>();
+            for (int i = 0; i < expression.Bindings.Count; i++)
+            {
+                MemberInfo m = expression.Bindings[i].Member;
+                MemberAssignment memberAssignment = expression.Bindings[i] as MemberAssignment;
+                ConstantExpression c = memberAssignment.Expression as ConstantExpression;
+                fields.Add(m.GetEntityFieldName());
+                values.Add(c.Value);
+            }
+
+            sqlPack += "(" + string.Join(",", fields) + ")";
+            sqlPack += " values (";
+            foreach(object value in values)
+            {
+                sqlPack.AddDbParameter(values);
+                sqlPack += ",";
+            }
+            if (sqlPack[sqlPack.Length - 1] == ',')
+            {
+                sqlPack.Sql.Remove(sqlPack.Length - 1, 1);
+            }
+            sqlPack += ")";
+            return sqlPack;
+        }
+
         protected override SqlPack Update(MemberInitExpression expression, SqlPack sqlPack)
         {
             for (int i = 0; i < expression.Bindings.Count; i++)
             {
                 MemberInfo m = expression.Bindings[i].Member;
-
                 MemberAssignment memberAssignment = expression.Bindings[i] as MemberAssignment;
                 ConstantExpression c = memberAssignment.Expression as ConstantExpression;
                 //sqlPack += m.Name + " =";

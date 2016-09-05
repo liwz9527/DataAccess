@@ -1,4 +1,8 @@
 ﻿#region License
+
+#endregion
+
+using System.Collections.Generic;
 /**
 * Copyright (c) 2015, 何志祥 (strangecity@qq.com).
 *
@@ -14,8 +18,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-#endregion
-
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -26,13 +28,41 @@ namespace Expression2Sql
     [SuppressMessage("Rule Category", "CS1591")]
     class NewExpression2Sql : BaseExpression2Sql<NewExpression>
 	{
-		protected override SqlPack Update(NewExpression expression, SqlPack sqlPack)
+        protected override SqlPack Insert(NewExpression expression, SqlPack sqlPack)
+        {
+            List<string> fields = new List<string>();
+            List<object> values = new List<object>();
+            for (int i = 0; i < expression.Members.Count; i++)
+            {
+                MemberInfo m = expression.Members[i];
+                ConstantExpression c = expression.Arguments[i] as ConstantExpression;
+                fields.Add(m.GetEntityFieldName());
+                values.Add(c.Value);
+            }
+
+            sqlPack += "(" + string.Join(",", fields) + ")";
+            sqlPack += " values (";
+            foreach (object value in values)
+            {
+                sqlPack.AddDbParameter(values);
+                sqlPack += ",";
+            }
+            if (sqlPack[sqlPack.Length - 1] == ',')
+            {
+                sqlPack.Sql.Remove(sqlPack.Length - 1, 1);
+            }
+            sqlPack += ")";
+            return sqlPack;
+        }
+
+        protected override SqlPack Update(NewExpression expression, SqlPack sqlPack)
 		{
 			for (int i = 0; i < expression.Members.Count; i++)
 			{
 				MemberInfo m = expression.Members[i];
 				ConstantExpression c = expression.Arguments[i] as ConstantExpression;
-                sqlPack += m.Name + " =";
+                //sqlPack += m.Name + " =";
+                sqlPack += m.GetEntityFieldName() + " =";
                 sqlPack.AddDbParameter(c.Value);
 				sqlPack += ",";
 			}
@@ -47,7 +77,7 @@ namespace Expression2Sql
 		{
 			foreach (Expression item in expression.Arguments)
 			{
-				Expression2SqlProvider.Select(item, sqlPack);
+				SqlProvider.Select(item, sqlPack);
 			}
 			return sqlPack;
 		}
@@ -56,7 +86,7 @@ namespace Expression2Sql
 		{
 			foreach (Expression item in expression.Arguments)
 			{
-				Expression2SqlProvider.GroupBy(item, sqlPack);
+				SqlProvider.GroupBy(item, sqlPack);
 			}
 			return sqlPack;
 		}
@@ -65,7 +95,7 @@ namespace Expression2Sql
 		{
 			foreach (Expression item in expression.Arguments)
 			{
-				Expression2SqlProvider.OrderBy(item, sqlPack);
+				SqlProvider.OrderBy(item, sqlPack);
 			}
 			return sqlPack;
 		}

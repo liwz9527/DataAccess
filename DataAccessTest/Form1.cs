@@ -24,6 +24,7 @@ namespace DataAccessTest
             this.dataGridView2.DataSource = factoryDt;
             this.txtConn.Text = "sqlite";
             this.txtSQL.Text = "select * from news";
+
         }
 
         private void btnExecSql_Click(object sender, EventArgs e)
