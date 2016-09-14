@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
 
 namespace Vic.Data
 {
@@ -68,7 +70,7 @@ namespace Vic.Data
         /// <typeparam name="T">实体</typeparam>
         /// <param name="expression">列值</param>
         /// <returns></returns>
-        public int Add<T>(Expression<Func<object>> expression)
+        public int Add<T>(Expression<Func<object>> expression) where T : class, new()
         {
             if (expression == null)
             {
@@ -91,6 +93,33 @@ namespace Vic.Data
             }
 
             return result;
+        }
+
+        public void Add<T>(List<T> listEntity)
+        {
+            if (listEntity == null)
+            {
+                throw new ArgumentNullException("listEntity参数不能为空！");
+            }
+
+            try
+            {
+                Expre2Sql.Init(DatabaseType);
+                List<DbSQL> sqls = new List<DbSQL>();
+                foreach (T t in listEntity)
+                {
+                    SqlCore<T> sql = Expre2Sql.Insert<T>(() => t);
+                    string sqlStr = sql.SqlStr;
+                    List<DbParameter> paras = GetDbParameters(sql.DbParams);
+                    DbSQL dbSql = new DbSQL(sqlStr, paras.ToArray());
+                    sqls.Add(dbSql);
+                }
+                ExecuteSqlTran(0, sqls);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Add方法执行错误!" + Environment.NewLine + ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -267,7 +296,7 @@ namespace Vic.Data
         /// <typeparam name="T">表实体</typeparam>
         /// <param name="expression">列值</param>
         /// <returns></returns>
-        public int Update<T>(Expression<Func<object>> expression)
+        public int Update<T>(Expression<Func<object>> expression) where T : class, new()
         {
             if (expression == null)
             {
@@ -299,7 +328,7 @@ namespace Vic.Data
         /// <param name="expression">列值</param>
         /// <param name="predicate">条件</param>
         /// <returns></returns>
-        public int Update<T>(Expression<Func<object>> expression, Expression<Func<T, bool>> predicate)
+        public int Update<T>(Expression<Func<object>> expression, Expression<Func<T, bool>> predicate) where T : class, new()
         {
             if (expression == null)
             {

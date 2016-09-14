@@ -17,6 +17,7 @@
 #endregion
 
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -49,7 +50,12 @@ namespace Expression2Sql
             return sqlPack;
         }
 
-		protected override SqlPack Join(MemberExpression expression, SqlPack sqlPack)
+        protected override SqlPack Insert(MemberExpression expression, SqlPack sqlPack)
+        {
+            return sqlPack;
+        }
+
+        protected override SqlPack Join(MemberExpression expression, SqlPack sqlPack)
 		{
             //sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
             //string tableAlias = sqlPack.GetTableAlias(expression.Member.DeclaringType.Name);

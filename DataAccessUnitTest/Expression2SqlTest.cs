@@ -243,7 +243,6 @@ namespace DataAccessTest.UnitTests
             );
 
             //to be continued...
-
         }
 
         private static void Printf<T>(SqlCore<T> expression2Sql, string description = "")
