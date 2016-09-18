@@ -27,9 +27,9 @@ namespace Expression2Sql
 {
     [SuppressMessage("Rule Category", "CS1591")]
     class MemberExpression2Sql : BaseExpression2Sql<MemberExpression>
-	{
-		protected override SqlPack Select(MemberExpression expression, SqlPack sqlPack)
-		{
+    {
+        protected override SqlPack Select(MemberExpression expression, SqlPack sqlPack)
+        {
             //sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
             //string tableAlias = sqlPack.GetTableAlias(expression.Member.DeclaringType.Name);
             //if (!string.IsNullOrWhiteSpace(tableAlias))
@@ -50,13 +50,8 @@ namespace Expression2Sql
             return sqlPack;
         }
 
-        protected override SqlPack Insert(MemberExpression expression, SqlPack sqlPack)
-        {
-            return sqlPack;
-        }
-
         protected override SqlPack Join(MemberExpression expression, SqlPack sqlPack)
-		{
+        {
             //sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
             //string tableAlias = sqlPack.GetTableAlias(expression.Member.DeclaringType.Name);
             //if (!string.IsNullOrWhiteSpace(tableAlias))
@@ -77,8 +72,8 @@ namespace Expression2Sql
             return sqlPack;
         }
 
-		protected override SqlPack Where(MemberExpression expression, SqlPack sqlPack)
-		{
+        protected override SqlPack Where(MemberExpression expression, SqlPack sqlPack)
+        {
             //sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
             //string tableAlias = sqlPack.GetTableAlias(expression.Member.DeclaringType.Name);
             //if (!string.IsNullOrWhiteSpace(tableAlias))
@@ -99,46 +94,46 @@ namespace Expression2Sql
             return sqlPack;
         }
 
-		protected override SqlPack In(MemberExpression expression, SqlPack sqlPack)
-		{
-			var field = expression.Member as FieldInfo;
-			if (field != null)
-			{
-				object val = field.GetValue(((ConstantExpression)expression.Expression).Value);
+        protected override SqlPack In(MemberExpression expression, SqlPack sqlPack)
+        {
+            var field = expression.Member as FieldInfo;
+            if (field != null)
+            {
+                object val = field.GetValue(((ConstantExpression)expression.Expression).Value);
 
-				if (val != null)
-				{
-					string itemJoinStr = "";
-					IEnumerable array = val as IEnumerable;
-					foreach (var item in array)
-					{
-						if (field.FieldType.Name == "String[]")
-						{
-							itemJoinStr += string.Format(",'{0}'", item);
-						}
-						else
-						{
-							itemJoinStr += string.Format(",{0}", item);
-						}
-					}
+                if (val != null)
+                {
+                    string itemJoinStr = "";
+                    IEnumerable array = val as IEnumerable;
+                    foreach (var item in array)
+                    {
+                        if (field.FieldType.Name == "String[]")
+                        {
+                            itemJoinStr += string.Format(",'{0}'", item);
+                        }
+                        else
+                        {
+                            itemJoinStr += string.Format(",{0}", item);
+                        }
+                    }
 
-					if (itemJoinStr.Length > 0)
-					{
-						itemJoinStr = itemJoinStr.Remove(0, 1);
-						itemJoinStr = string.Format("({0})", itemJoinStr);
-						sqlPack += itemJoinStr;
-					}
-				}
-			}
+                    if (itemJoinStr.Length > 0)
+                    {
+                        itemJoinStr = itemJoinStr.Remove(0, 1);
+                        itemJoinStr = string.Format("({0})", itemJoinStr);
+                        sqlPack += itemJoinStr;
+                    }
+                }
+            }
 
-			return sqlPack;
-		}
+            return sqlPack;
+        }
 
-		protected override SqlPack GroupBy(MemberExpression expression, SqlPack sqlPack)
-		{
-			//sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
-			//sqlPack += sqlPack.GetTableAlias(expression.Member.DeclaringType.Name) + "." + expression.Member.Name;
-			//return sqlPack;
+        protected override SqlPack GroupBy(MemberExpression expression, SqlPack sqlPack)
+        {
+            //sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
+            //sqlPack += sqlPack.GetTableAlias(expression.Member.DeclaringType.Name) + "." + expression.Member.Name;
+            //return sqlPack;
 
             string tableName = expression.Member.DeclaringType.GetEntityTableName();
             sqlPack.SetTableAlias(tableName);
@@ -146,51 +141,51 @@ namespace Expression2Sql
             return sqlPack;
         }
 
-		protected override SqlPack OrderBy(MemberExpression expression, SqlPack sqlPack)
-		{
+        protected override SqlPack OrderBy(MemberExpression expression, SqlPack sqlPack)
+        {
             //sqlPack.SetTableAlias(expression.Member.DeclaringType.Name);
             //sqlPack += sqlPack.GetTableAlias(expression.Member.DeclaringType.Name) + "." + expression.Member.Name;
             //return sqlPack;
 
             string tableName = expression.Member.DeclaringType.GetEntityTableName();
             sqlPack.SetTableAlias(tableName);
-			sqlPack += sqlPack.GetTableAlias(tableName) + "." + expression.Member.GetEntityFieldName();
-			return sqlPack;
-		}
+            sqlPack += sqlPack.GetTableAlias(tableName) + "." + expression.Member.GetEntityFieldName();
+            return sqlPack;
+        }
 
-		protected override SqlPack Max(MemberExpression expression, SqlPack sqlPack)
-		{
+        protected override SqlPack Max(MemberExpression expression, SqlPack sqlPack)
+        {
             //sqlPack.Sql.AppendFormat("select max({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
             sqlPack.Sql.AppendFormat("select max({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
             return sqlPack;
-		}
+        }
 
-		protected override SqlPack Min(MemberExpression expression, SqlPack sqlPack)
-		{
-			//sqlPack.Sql.AppendFormat("select min({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
+        protected override SqlPack Min(MemberExpression expression, SqlPack sqlPack)
+        {
+            //sqlPack.Sql.AppendFormat("select min({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
             sqlPack.Sql.AppendFormat("select min({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
             return sqlPack;
-		}
+        }
 
-		protected override SqlPack Avg(MemberExpression expression, SqlPack sqlPack)
-		{
+        protected override SqlPack Avg(MemberExpression expression, SqlPack sqlPack)
+        {
             //sqlPack.Sql.AppendFormat("select avg({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
             sqlPack.Sql.AppendFormat("select avg({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
             return sqlPack;
-		}
+        }
 
-		protected override SqlPack Count(MemberExpression expression, SqlPack sqlPack)
-		{
-			//sqlPack.Sql.AppendFormat("select count({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
-			sqlPack.Sql.AppendFormat("select count({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
-			return sqlPack;
-		}
+        protected override SqlPack Count(MemberExpression expression, SqlPack sqlPack)
+        {
+            //sqlPack.Sql.AppendFormat("select count({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
+            sqlPack.Sql.AppendFormat("select count({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
+            return sqlPack;
+        }
 
-		protected override SqlPack Sum(MemberExpression expression, SqlPack sqlPack)
-		{
-			//sqlPack.Sql.AppendFormat("select sum({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
-			sqlPack.Sql.AppendFormat("select sum({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
-			return sqlPack;
-		}
-	}
+        protected override SqlPack Sum(MemberExpression expression, SqlPack sqlPack)
+        {
+            //sqlPack.Sql.AppendFormat("select sum({0}) from {1}", expression.Member.Name, expression.Member.DeclaringType.Name);
+            sqlPack.Sql.AppendFormat("select sum({0}) from {1}", expression.Member.GetEntityFieldName(), expression.Member.DeclaringType.GetEntityTableName());
+            return sqlPack;
+        }
+    }
 }

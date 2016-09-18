@@ -136,9 +136,9 @@ namespace Expression2Sql
 			throw new NotImplementedException("未实现的Expression2Sql");
 		}
 
-        public static void Insert(Expression experssion, SqlPack sqlPack)
+        public static void Insert(Expression expression, SqlPack sqlPack)
         {
-            GetExpression2Sql(experssion).Insert(experssion, sqlPack);
+            GetExpression2Sql(expression).Insert(expression, sqlPack);
         }
 
         public static void Update(Expression expression, SqlPack sqlPack)

@@ -30,12 +30,6 @@ namespace Expression2Sql
 			return sqlPack;
 		}
 
-        protected override SqlPack Insert(UnaryExpression expression, SqlPack sqlPack)
-        {
-            SqlProvider.Insert(expression.Operand, sqlPack);
-            return sqlPack;
-        }
-
         protected override SqlPack Where(UnaryExpression expression, SqlPack sqlPack)
 		{
 			SqlProvider.Where(expression.Operand, sqlPack);

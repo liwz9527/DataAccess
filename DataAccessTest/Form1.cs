@@ -62,6 +62,7 @@ namespace DataAccessTest
                 users.Add(u);
 
                 dataAccess.Add(users);
+
             }
             catch (Exception ex)
             {

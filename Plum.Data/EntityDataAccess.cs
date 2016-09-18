@@ -108,7 +108,8 @@ namespace Vic.Data
                 List<DbSQL> sqls = new List<DbSQL>();
                 foreach (T t in listEntity)
                 {
-                    SqlCore<T> sql = Expre2Sql.Insert<T>(() => t);
+                    Expression<Func<object>> expr = Expression.Lambda<Func<object>>(ExpressionBuilder.GenMemberInitExpression(t));
+                    SqlCore<T> sql = Expre2Sql.Insert<T>(expr);
                     string sqlStr = sql.SqlStr;
                     List<DbParameter> paras = GetDbParameters(sql.DbParams);
                     DbSQL dbSql = new DbSQL(sqlStr, paras.ToArray());

@@ -42,5 +42,11 @@ namespace Expression2Sql
 			}
 			return sqlPack;
 		}
-	}
+
+        protected override SqlPack Insert(ConstantExpression expression, SqlPack sqlPack)
+        {
+            sqlPack.AddDbParameter(expression.Value);
+            return sqlPack;
+        }
+    }
 }

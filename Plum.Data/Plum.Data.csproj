@@ -69,6 +69,7 @@
     <Compile Include="Expression2Sql\Expression\UnaryExpression2Sql.cs" />
     <Compile Include="Expression2Sql\IExpression2Sql.cs" />
     <Compile Include="Expression2Sql\SqlPack.cs" />
+    <Compile Include="ExpressionBuilder.cs" />
     <Compile Include="MethodExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DataAccess.cs" />
