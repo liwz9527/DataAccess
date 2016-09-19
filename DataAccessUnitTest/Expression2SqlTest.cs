@@ -176,9 +176,6 @@ namespace DataAccessTest.UnitTests
                  "OrderBy排序"
             );
 
-
-
-
             Printf(
                  Expre2Sql.Max<UserInfo>(u => u.Id),
                  "返回一列中的最大值。NULL 值不包括在计算中。"

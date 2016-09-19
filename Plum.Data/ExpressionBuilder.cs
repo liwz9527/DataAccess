@@ -12,7 +12,7 @@ namespace Vic.Data
         /// <summary>
         /// 根据Entity实体生成MemberInitExpression
         /// </summary>
-        /// <param name="entity">实体<param>
+        /// <param name="entity">实体</param>
         /// <returns></returns>
         public static MemberInitExpression GenMemberInitExpression(object entity)
         {

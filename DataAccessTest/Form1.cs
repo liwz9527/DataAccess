@@ -38,37 +38,35 @@ namespace DataAccessTest
                 DataTable dt = dataAccess.QueryTable(this.txtSQL.Text);
                 this.dataGridView1.DataSource = dt;
 
-                List<UserInfo> users = new List<UserInfo>();
-                UserInfo u;
-                u = new UserInfo();
-                u.Id = 1;
-                u.Name = "A";
-                u.Sex = 1;
-                u.Email = "a.mail";
-                users.Add(u);
+                //List<UserInfo> users = new List<UserInfo>();
+                //UserInfo u;
+                //u = new UserInfo();
+                //u.Id = 1;
+                //u.Name = "A";
+                //u.Sex = 1;
+                //u.Email = "a.mail";
+                //users.Add(u);
 
-                u = new UserInfo();
-                u.Id = 2;
-                u.Name = "B";
-                u.Sex = 1;
-                u.Email = "b.mail";
-                users.Add(u);
+                //u = new UserInfo();
+                //u.Id = 2;
+                //u.Name = "B";
+                //u.Sex = 1;
+                //u.Email = "b.mail";
+                //users.Add(u);
 
-                u = new UserInfo();
-                u.Id = 3;
-                u.Name = "C";
-                u.Sex = 1;
-                u.Email = "c.mail";
-                users.Add(u);
-
-                dataAccess.Add(users);
-
+                //u = new UserInfo();
+                //u.Id = 3;
+                //u.Name = "C";
+                //u.Sex = 1;
+                //u.Email = "c.mail";
+                //users.Add(u);
+                //dataAccess.Add(users);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-        }        
+        }
     }
 
     [Table("userinfo1")]

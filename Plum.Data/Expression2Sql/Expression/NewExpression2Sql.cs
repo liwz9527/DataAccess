@@ -44,7 +44,7 @@ namespace Expression2Sql
             sqlPack += " values (";
             foreach (object value in values)
             {
-                sqlPack.AddDbParameter(values);
+                sqlPack.AddDbParameter(value);
                 sqlPack += ",";
             }
             if (sqlPack[sqlPack.Length - 1] == ',')

@@ -95,13 +95,20 @@ namespace Vic.Data
             return result;
         }
 
-        public void Add<T>(List<T> listEntity)
+        /// <summary>
+        /// 向T对应的数据表中增加一组记录
+        /// </summary>
+        /// <typeparam name="T">实体</typeparam>
+        /// <param name="listEntity">数据列表</param>
+        /// <returns></returns>
+        public int Add<T>(List<T> listEntity)
         {
             if (listEntity == null)
             {
                 throw new ArgumentNullException("listEntity参数不能为空！");
             }
 
+            int result = 0;
             try
             {
                 Expre2Sql.Init(DatabaseType);
@@ -115,12 +122,13 @@ namespace Vic.Data
                     DbSQL dbSql = new DbSQL(sqlStr, paras.ToArray());
                     sqls.Add(dbSql);
                 }
-                ExecuteSqlTran(0, sqls);
+                result = ExecuteSqlTran(0, sqls);
             }
             catch (Exception ex)
             {
                 throw new Exception("Add方法执行错误!" + Environment.NewLine + ex.Message, ex);
             }
+            return result;
         }
 
         /// <summary>

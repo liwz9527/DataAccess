@@ -147,7 +147,7 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        void ExecuteSqlTran(int commits, params string[] sqls);
+        int ExecuteSqlTran(int commits, params string[] sqls);
 
         /// <summary>
         /// 执行多条SQL语句(带 DbParameter 参数)，实现数据库事务。
@@ -155,7 +155,7 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        void ExecuteSqlTran(int commits, params DbSQL[] sqls);
+        int ExecuteSqlTran(int commits, params DbSQL[] sqls);
 
         /// <summary>
         /// 执行多条SQL语句(带 DbParameter 参数)，实现数据库事务。
@@ -163,7 +163,7 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        void ExecuteSqlTran(int commits, IList<DbSQL> sqls);
+        int ExecuteSqlTran(int commits, IList<DbSQL> sqls);
 
         /// <summary>
         /// 执行查询语句

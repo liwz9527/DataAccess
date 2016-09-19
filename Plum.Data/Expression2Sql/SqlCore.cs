@@ -378,7 +378,7 @@ namespace Expression2Sql
             this._sqlPack.Clear();
             this._sqlPack.IsSingleTable = true;
             //this._sqlPack += "insert into " + typeof(T).GetEntityTableName();
-            this._sqlPack += "insert into " + typeof(T).GetEntityTableName() + " ({0}) values ({1})";
+            this._sqlPack += "insert into " + typeof(T).GetEntityTableName();
             SqlProvider.Insert(expression.Body, this._sqlPack);
             return this;
         }

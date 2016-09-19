@@ -366,8 +366,9 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        public void ExecuteSqlTran(int commits, params string[] sqls)
+        public int ExecuteSqlTran(int commits, params string[] sqls)
         {
+            int result = 0;
             using (DbConnection conn = CreateConnection())
             {
                 DbCommand cmd = null;
@@ -385,7 +386,7 @@ namespace Vic.Data
                         if (strSql.Trim().Length > 1)
                         {
                             cmd.CommandText = strSql;
-                            cmd.ExecuteNonQuery();
+                            result += cmd.ExecuteNonQuery();
                         }
 
                         //如果commits > 0 ，则按该数设定的值进行一次提交操作，i+1 是因为当i=0时是第一条记录。
@@ -412,6 +413,7 @@ namespace Vic.Data
                         trans.Dispose();
                 }
             }
+            return result;
         }
 
         /// <summary>
@@ -420,9 +422,9 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        public void ExecuteSqlTran(int commits, params DbSQL[] sqls)
+        public int ExecuteSqlTran(int commits, params DbSQL[] sqls)
         {
-            ExecuteSqlTran(commits, sqls.ToList());
+            return ExecuteSqlTran(commits, sqls.ToList());
         }
 
         /// <summary>
@@ -431,8 +433,9 @@ namespace Vic.Data
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
-        public void ExecuteSqlTran(int commits, IList<DbSQL> sqls)
+        public int ExecuteSqlTran(int commits, IList<DbSQL> sqls)
         {
+            int result = 0;
             using (DbConnection conn = CreateConnection())
             {
                 DbCommand cmd = null;
@@ -458,7 +461,7 @@ namespace Vic.Data
                                     cmd.Parameters.Add(para);
                                 }
                             }
-                            cmd.ExecuteNonQuery();
+                            result += cmd.ExecuteNonQuery();
                         }
 
                         //如果commits > 0 ，则按该数设定的值进行一次提交操作，i+1 是因为当i=0时是第一条记录。
@@ -485,6 +488,7 @@ namespace Vic.Data
                         trans.Dispose();
                 }
             }
+            return result;
         }
 
         /// <summary>
