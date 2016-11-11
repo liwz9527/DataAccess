@@ -357,7 +357,41 @@ namespace Vic.Data
                         cmd.Dispose();
                 }
             }
+            this.parms = GetParametersValue(parameters);
             return result;
+        }
+
+        /// <summary>
+        /// 执行多条SQL语句，实现数据库事务。
+        /// </summary>
+        /// <param name="sqls">SQL语句</param>
+        /// <returns></returns>
+        public int ExecuteSqlTran(params string[] sqls)
+        {
+            return ExecuteSqlTran(0, sqls);
+        }
+
+        /// <summary>
+        /// 执行多条SQL语句(带 DbParameter 参数)，实现数据库事务。
+        /// </summary>
+        /// <param name="sqls">SQL语句</param>
+        /// <returns></returns>
+        public int ExecuteSqlTran(params DbSQL[] sqls)
+        {
+            if (sqls != null)
+                return ExecuteSqlTran(0, sqls.ToList());
+            else
+                return ExecuteSqlTran(0, new List<DbSQL>());
+        }
+
+        /// <summary>
+        /// 执行多条SQL语句(带 DbParameter 参数)，实现数据库事务。
+        /// </summary>
+        /// <param name="sqls">SQL语句</param>
+        /// <returns></returns>
+        public int ExecuteSqlTran(IList<DbSQL> sqls)
+        {
+            return ExecuteSqlTran(0, sqls);
         }
 
         /// <summary>
@@ -424,7 +458,10 @@ namespace Vic.Data
         /// <returns></returns>
         public int ExecuteSqlTran(int commits, params DbSQL[] sqls)
         {
-            return ExecuteSqlTran(commits, sqls.ToList());
+            if (sqls != null)
+                return ExecuteSqlTran(commits, sqls.ToList());
+            else
+                return ExecuteSqlTran(commits, new List<DbSQL>());
         }
 
         /// <summary>
@@ -558,6 +595,7 @@ namespace Vic.Data
                         adp.Dispose();
                 }
             }
+            this.parms = GetParametersValue(parameters);
             return result;
         }
 
@@ -613,7 +651,10 @@ namespace Vic.Data
         /// <returns></returns>
         public DataSet Query(params DbSQL[] sqls)
         {
-            return Query(sqls.ToList());
+            if (sqls != null)
+                return Query(sqls.ToList());
+            else
+                return Query(new List<DbSQL>());
         }
 
         /// <summary>
@@ -791,85 +832,59 @@ namespace Vic.Data
             {
 
             }
+            this.parms = GetParametersValue(parameters);
             return dataReader;
         }
 
         /// <summary>
-        /// 执行分页查询
+        /// 执行分页查询(DataReader方式)
         /// </summary>
         /// <param name="sql">查询语句</param>
         /// <param name="pageSize">分页大小</param>
         /// <param name="currPageIndex">当前页索引</param>
-        /// <param name="allRowsCount">总记录数</param>
         /// <returns>DataTable</returns>
-        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount)
+        public DataTable QueryPage(string sql, int pageSize, int currPageIndex)
         {
-            return QueryPage(sql, pageSize, currPageIndex, out allRowsCount, new List<DbParameter>());
+            return QueryPage(sql, pageSize, currPageIndex, new List<DbParameter>());
         }
 
         /// <summary>
-        /// 执行分页查询
+        /// 执行分页查询(DataReader方式)
         /// </summary>
         /// <param name="sql">查询语句</param>
         /// <param name="pageSize">分页大小</param>
         /// <param name="currPageIndex">当前页索引</param>
-        /// <param name="allRowsCount">总记录数</param>
         /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
         /// <returns>DataTable</returns>
-        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount, params DbParameter[] parameters)
+        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, params DbParameter[] parameters)
         {
             if (parameters != null)
-                return QueryPage(sql, pageSize, currPageIndex, out allRowsCount, parameters.ToList());
+                return QueryPage(sql, pageSize, currPageIndex, parameters.ToList());
             else
-                return QueryPage(sql, pageSize, currPageIndex, out allRowsCount, new List<DbParameter>());
+                return QueryPage(sql, pageSize, currPageIndex, new List<DbParameter>());
         }
 
         /// <summary>
-        /// 执行分页查询
+        /// 执行分页查询(DataReader方式)
         /// </summary>
         /// <param name="sql">查询语句</param>
         /// <param name="pageSize">分页大小</param>
         /// <param name="currPageIndex">当前页索引</param>
-        /// <param name="allRowsCount">总记录数</param>
         /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
         /// <returns>DataTable</returns>
-        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount, IList<DbParameter> parameters)
+        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, IList<DbParameter> parameters)
         {
-            DataTable result = new DataTable();
-            result.TableName = "Table";
+            DataTable result = null;
             int startIndex = (currPageIndex - 1) * pageSize; //读取数据的开始索引
             int endIndex = currPageIndex * pageSize - 1; //读取数据的结束索引
             int readCurrIndex = -1;  //DataReader读取的当前数据行的索引 
-            allRowsCount = 0; //总记录数
             DbDataReader dataReader = null;
             try
             {
-                #region 获取所有记录数
-                //DataTable allRowsDt = QueryTable(sql, parameters);
-                //if (allRowsDt != null)
-                //    allRowsCount = allRowsDt.Rows.Count;
-                //allRowsDt.Dispose();
-
                 dataReader = QueryReader(sql, parameters);
-                while (dataReader.Read())
-                {
-                    allRowsCount++;
-                }
-                dataReader.Close();
-                dataReader.Dispose();
 
-                double pageN = (allRowsCount + pageSize - 1) / pageSize;
-                int pageCount = Convert.ToInt32(Math.Truncate(pageN)); //总页数
-                if (currPageIndex > pageCount)
-                {
-                    //如果当前页码>总页数，则设置当前页码=总页数，并重新计算读取数据的开始和结束索引
-                    currPageIndex = pageCount;
-                    startIndex = (currPageIndex - 1) * pageSize;
-                    endIndex = currPageIndex * pageSize - 1;
-                }
-                #endregion
-
-                dataReader = QueryReader(sql, parameters);
+                result = new DataTable();
+                result.TableName = "Table";
 
                 #region 构造表结构
                 DataTable schemaDt = dataReader.GetSchemaTable();
@@ -897,7 +912,7 @@ namespace Vic.Data
                     for (int i = 0; i < cols; i++)
                     {
                         string colName = result.Columns[i].ColumnName;
-                        dr[colName] = dataReader[dataReader.GetOrdinal(colName)];
+                        dr[colName] = dataReader.GetValue(dataReader.GetOrdinal(colName));
                     }
                     result.Rows.Add(dr);
                 }
@@ -917,7 +932,230 @@ namespace Vic.Data
                     dataReader.Dispose();
                 }
             }
+            this.parms = GetParametersValue(parameters);
+            return result;
+        }
 
+        /// <summary>
+        /// 执行分页查询(DataReader方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <returns>DataTable</returns>
+        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount)
+        {
+            return QueryPage(sql, pageSize, currPageIndex, out allRowsCount, new List<DbParameter>());
+        }
+
+        /// <summary>
+        /// 执行分页查询(DataReader方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount, params DbParameter[] parameters)
+        {
+            if (parameters != null)
+                return QueryPage(sql, pageSize, currPageIndex, out allRowsCount, parameters.ToList());
+            else
+                return QueryPage(sql, pageSize, currPageIndex, out allRowsCount, new List<DbParameter>());
+        }
+
+        /// <summary>
+        /// 执行分页查询(DataReader方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        public DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount, IList<DbParameter> parameters)
+        {
+            DataTable result = null;
+            int startIndex = (currPageIndex - 1) * pageSize; //读取数据的开始索引
+            int endIndex = currPageIndex * pageSize - 1; //读取数据的结束索引
+            int readCurrIndex = -1;  //DataReader读取的当前数据行的索引 
+            allRowsCount = 0; //总记录数
+            DbDataReader dataReader = null;
+            try
+            {
+                #region 获取所有记录数
+                //DataTable allRowsDt = QueryTable(sql, parameters);
+                //if (allRowsDt != null)
+                //    allRowsCount = allRowsDt.Rows.Count;
+                //allRowsDt.Dispose();
+
+                dataReader = QueryReader(sql, parameters);
+                while (dataReader.Read())
+                {
+                    allRowsCount++;
+                }
+                dataReader.Close();
+                dataReader.Dispose();
+
+                double pageN = (allRowsCount + pageSize - 1) / pageSize;
+                int pageCount = Convert.ToInt32(Math.Truncate(pageN)); //总页数
+                if (currPageIndex >= pageCount)
+                {
+                    //如果当前页码>总页数，则设置当前页码=总页数，并重新计算读取数据的开始和结束索引
+                    currPageIndex = pageCount;
+                    startIndex = (currPageIndex - 1) * pageSize;
+                    endIndex = allRowsCount - 1;
+                }
+                #endregion
+
+                dataReader = QueryReader(sql, parameters);
+
+                result = new DataTable();
+                result.TableName = "Table";
+
+                #region 构造表结构
+                DataTable schemaDt = dataReader.GetSchemaTable();
+                int cols = dataReader.VisibleFieldCount;
+                for (int i = 0; i < cols; i++)
+                {
+                    result.Columns.Add(new DataColumn(dataReader.GetName(i), dataReader.GetFieldType(i)));
+                }
+                #endregion
+
+                #region 填充数据
+                while (dataReader.Read())
+                {
+                    readCurrIndex++;
+
+                    //如果当前行Index小于开始行Index，则下一个循环
+                    if (readCurrIndex < startIndex)
+                        continue;
+
+                    //如果当前行Index大于结束行Index，则跳出循环
+                    if (readCurrIndex > endIndex)
+                        break;
+
+                    DataRow dr = result.NewRow();
+                    for (int i = 0; i < cols; i++)
+                    {
+                        string colName = result.Columns[i].ColumnName;
+                        dr[colName] = dataReader.GetValue(dataReader.GetOrdinal(colName));
+                    }
+                    result.Rows.Add(dr);
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                result = null;
+                throw ex;
+            }
+            finally
+            {
+                if (dataReader != null)
+                {
+                    if (!dataReader.IsClosed)
+                        dataReader.Close();
+                    dataReader.Dispose();
+                }
+            }
+            this.parms = GetParametersValue(parameters);
+            return result;
+        }
+
+        /// <summary>
+        /// 执行分页查询(DataTable方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <returns>DataTable</returns>
+        public DataTable QueryPage2(string sql, int pageSize, int currPageIndex, out int allRowsCount)
+        {
+            return QueryPage2(sql, pageSize, currPageIndex, out allRowsCount, new List<DbParameter>());
+        }
+
+        /// <summary>
+        /// 执行分页查询(DataTable方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        public DataTable QueryPage2(string sql, int pageSize, int currPageIndex, out int allRowsCount, params DbParameter[] parameters)
+        {
+            if (parameters != null)
+                return QueryPage2(sql, pageSize, currPageIndex, out allRowsCount, parameters.ToList());
+            else
+                return QueryPage2(sql, pageSize, currPageIndex, out allRowsCount, new List<DbParameter>());
+        }
+
+        /// <summary>
+        /// 执行分页查询(DataTable方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        public DataTable QueryPage2(string sql, int pageSize, int currPageIndex, out int allRowsCount, IList<DbParameter> parameters)
+        {
+            DataTable result = null;
+            int startIndex = (currPageIndex - 1) * pageSize; //读取数据的开始索引
+            int endIndex = currPageIndex * pageSize - 1; //读取数据的结束索引
+            allRowsCount = 0; //总记录数
+            try
+            {
+                DataTable allRowsDt = QueryTable(sql, parameters);
+                if (allRowsDt == null)
+                    return null;
+
+                #region 获取所有记录数
+                allRowsCount = allRowsDt.Rows.Count;
+
+                double pageN = (allRowsCount + pageSize - 1) / pageSize;
+                int pageCount = Convert.ToInt32(Math.Truncate(pageN)); //总页数
+                if (currPageIndex >= pageCount)
+                {
+                    //如果当前页码>总页数，则设置当前页码=总页数，并重新计算读取数据的开始和结束索引
+                    currPageIndex = pageCount;
+                    startIndex = (currPageIndex - 1) * pageSize;
+                    endIndex = allRowsCount - 1; //DataTable行索引是从0开始的
+                }
+                #endregion
+
+                #region 构造表结构
+                result = allRowsDt.Clone();
+                result.TableName = "Table";
+                #endregion
+
+                #region 填充数据
+                for (int i = startIndex; i <= endIndex; i++)
+                {
+                    //DataRow dr = result.NewRow();
+                    //dr.ItemArray = allRowsDt.Rows[i].ItemArray;
+                    //result.Rows.Add(dr);
+
+                    result.ImportRow(allRowsDt.Rows[i]);
+                }                
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                result = null;
+                throw ex;
+            }
+            finally
+            {
+
+            }
+            this.parms = GetParametersValue(parameters);
             return result;
         }
 
@@ -1170,6 +1408,8 @@ namespace Vic.Data
                         adp.Dispose();
                 }
             }
+
+            this.parms = GetParametersValue(parameters);
         }
 
         /// <summary>
@@ -1234,7 +1474,10 @@ namespace Vic.Data
         /// <returns></returns>
         public void Update(DataSet dataSet, params DbSQL[] sqls)
         {
-            Update(dataSet, sqls.ToArray());
+            if (sqls != null)
+                Update(dataSet, sqls.ToList());
+            else
+                Update(dataSet, new List<DbSQL>());
         }
 
         /// <summary>
@@ -1366,7 +1609,10 @@ namespace Vic.Data
         /// <returns></returns>
         public void UpdateTran(DataSet dataSet, params DbSQL[] sqls)
         {
-            UpdateTran(dataSet, sqls.ToList());
+            if (sqls != null)
+                UpdateTran(dataSet, sqls.ToList());
+            else
+                UpdateTran(dataSet, new List<DbSQL>());
         }
 
         /// <summary>

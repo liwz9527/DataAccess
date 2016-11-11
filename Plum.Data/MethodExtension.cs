@@ -23,7 +23,7 @@ namespace Vic.Data
         public static List<TResult> ToList<TResult>(this DataTable dt) where TResult : class, new()
         {
             List<TResult> list = new List<TResult>();
-            if (dt == null)
+            if (dt == null || dt.Rows.Count == 0)
                 return list;
             DataTableEntityBuilder<TResult> eblist = DataTableEntityBuilder<TResult>.CreateBuilder(dt.Rows[0]);
             foreach (DataRow info in dt.Rows)

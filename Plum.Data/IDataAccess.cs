@@ -144,6 +144,27 @@ namespace Vic.Data
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
+        /// <param name="sqls">SQL语句</param>
+        /// <returns></returns>
+        int ExecuteSqlTran(params string[] sqls);
+
+        /// <summary>
+        /// 执行多条SQL语句(带 DbParameter 参数)，实现数据库事务。
+        /// </summary>
+        /// <param name="sqls">SQL语句</param>
+        /// <returns></returns>
+        int ExecuteSqlTran(params DbSQL[] sqls);
+
+        /// <summary>
+        /// 执行多条SQL语句(带 DbParameter 参数)，实现数据库事务。
+        /// </summary>
+        /// <param name="sqls">SQL语句</param>
+        /// <returns></returns>
+        int ExecuteSqlTran(IList<DbSQL> sqls);
+
+        /// <summary>
+        /// 执行多条SQL语句，实现数据库事务。
+        /// </summary>
         /// <param name="commits">指定执行多少条SQL后提交一次，小于或等于0为不指定即执行所有SQL后再提交。</param>
         /// <param name="sqls">SQL语句</param>
         /// <returns></returns>
@@ -256,7 +277,36 @@ namespace Vic.Data
         DbDataReader QueryReader(string sql, IList<DbParameter> parameters);
 
         /// <summary>
-        /// 执行分页查询
+        /// 执行分页查询(DataReader方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <returns>DataTable</returns>
+        DataTable QueryPage(string sql, int pageSize, int currPageIndex);
+
+        /// <summary>
+        /// 执行分页查询(DataReader方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        DataTable QueryPage(string sql, int pageSize, int currPageIndex, params DbParameter[] parameters);
+
+        /// <summary>
+        /// 执行分页查询(DataReader方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        DataTable QueryPage(string sql, int pageSize, int currPageIndex, IList<DbParameter> parameters);
+
+        /// <summary>
+        /// 执行分页查询(DataReader方式)
         /// </summary>
         /// <param name="sql">查询语句</param>
         /// <param name="pageSize">分页大小</param>
@@ -266,7 +316,7 @@ namespace Vic.Data
         DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount);
 
         /// <summary>
-        /// 执行分页查询
+        /// 执行分页查询(DataReader方式)
         /// </summary>
         /// <param name="sql">查询语句</param>
         /// <param name="pageSize">分页大小</param>
@@ -277,7 +327,7 @@ namespace Vic.Data
         DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount, params DbParameter[] parameters);
 
         /// <summary>
-        /// 执行分页查询
+        /// 执行分页查询(DataReader方式)
         /// </summary>
         /// <param name="sql">查询语句</param>
         /// <param name="pageSize">分页大小</param>
@@ -286,6 +336,38 @@ namespace Vic.Data
         /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
         /// <returns>DataTable</returns>
         DataTable QueryPage(string sql, int pageSize, int currPageIndex, out int allRowsCount, IList<DbParameter> parameters);
+
+        /// <summary>
+        /// 执行分页查询(DataTable方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <returns>DataTable</returns>
+        DataTable QueryPage2(string sql, int pageSize, int currPageIndex, out int allRowsCount);
+
+        /// <summary>
+        /// 执行分页查询(DataTable方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        DataTable QueryPage2(string sql, int pageSize, int currPageIndex, out int allRowsCount, params DbParameter[] parameters);
+
+        /// <summary>
+        /// 执行分页查询(DataTable方式)
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="pageSize">分页大小</param>
+        /// <param name="currPageIndex">当前页索引</param>
+        /// <param name="allRowsCount">总记录数</param>
+        /// <param name="parameters">SQL语句的 DbParameter 类型参数</param>
+        /// <returns>DataTable</returns>
+        DataTable QueryPage2(string sql, int pageSize, int currPageIndex, out int allRowsCount, IList<DbParameter> parameters);
 
         /// <summary>
         /// 执行存储过程
