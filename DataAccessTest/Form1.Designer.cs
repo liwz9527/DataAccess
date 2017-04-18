@@ -32,11 +32,11 @@
             this.btnExecSql = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtConn = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.txtSQL = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.cmbConn = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -91,13 +91,6 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "链接串名称：";
             // 
-            // txtConn
-            // 
-            this.txtConn.Location = new System.Drawing.Point(96, 212);
-            this.txtConn.Name = "txtConn";
-            this.txtConn.Size = new System.Drawing.Size(268, 21);
-            this.txtConn.TabIndex = 9;
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -139,16 +132,27 @@
             this.label1.TabIndex = 13;
             this.label1.Text = "SQL结果：";
             // 
+            // cmbConn
+            // 
+            this.cmbConn.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cmbConn.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.cmbConn.FormattingEnabled = true;
+            this.cmbConn.Location = new System.Drawing.Point(96, 212);
+            this.cmbConn.Name = "cmbConn";
+            this.cmbConn.Size = new System.Drawing.Size(121, 20);
+            this.cmbConn.Sorted = true;
+            this.cmbConn.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(839, 435);
+            this.Controls.Add(this.cmbConn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.txtSQL);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.txtConn);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.btnExecSql);
             this.Controls.Add(this.dataGridView1);
@@ -169,11 +173,11 @@
         private System.Windows.Forms.Button btnExecSql;
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtConn;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtSQL;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox cmbConn;
     }
 }
 

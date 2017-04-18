@@ -23,17 +23,23 @@ namespace DataAccessTest
         {
             DataTable factoryDt = System.Data.Common.DbProviderFactories.GetFactoryClasses();
             this.dataGridView2.DataSource = factoryDt;
-            this.txtConn.Text = "sqlite";
             this.txtSQL.Text = "select * from news";
 
+            ConnectionStringSettingsCollection conns = ConfigurationManager.ConnectionStrings;
+            foreach (ConnectionStringSettings s in conns)
+            {
+                this.cmbConn.Items.Add(s.Name);
+            }
+            if (this.cmbConn.Items.Count > 0)
+                this.cmbConn.SelectedIndex = 0;
         }
 
         private void btnExecSql_Click(object sender, EventArgs e)
         {
             try
             {
-                string conn = ConfigurationManager.ConnectionStrings[this.txtConn.Text].ConnectionString;
-                string prname = ConfigurationManager.ConnectionStrings[this.txtConn.Text].ProviderName;
+                string conn = ConfigurationManager.ConnectionStrings[this.cmbConn.Text].ConnectionString;
+                string prname = ConfigurationManager.ConnectionStrings[this.cmbConn.Text].ProviderName;
                 Vic.Data.DataAccess dataAccess = new Vic.Data.DataAccess(conn, prname);
                 DataTable dt = dataAccess.QueryTable(this.txtSQL.Text);
                 this.dataGridView1.DataSource = dt;

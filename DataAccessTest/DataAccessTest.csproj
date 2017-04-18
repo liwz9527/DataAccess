@@ -86,6 +86,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DB\access.accdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Drivers\SQLite\System.Data.SQLite.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
