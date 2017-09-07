@@ -31,11 +31,59 @@ namespace DataAccessTest.UnitTests
         public void Setup()
         {
             // 获取数据库连接
-            string conn = ConfigurationManager.ConnectionStrings["oracle1"].ConnectionString;
+            string conn = ConfigurationManager.ConnectionStrings["oracle2"].ConnectionString;
             // 获取数据库驱动
-            string prname = ConfigurationManager.ConnectionStrings["oracle1"].ProviderName;
+            string prname = ConfigurationManager.ConnectionStrings["oracle2"].ProviderName;
             // 初始化
             dbAccess = new DataAccess(conn, prname);
+        }
+
+        [TestMethod]
+        public void TestExecuteSqlTran()
+        {
+            IList<DbSQL> sqls = new List<DbSQL>();
+            DbSQL sql;
+            System.Data.Common.DbParameter par;
+            par = dbAccess.CreateParameter();
+            par.ParameterName = "nl";
+            par.DbType = System.Data.DbType.Int32;
+            par.Value = 10;
+
+            sql = new DbSQL();
+            sql.SQLString = "insert into a_test (xm,nl) values ('zs', :nl)";
+            sql.DbParameters = new System.Data.Common.DbParameter[] { par };
+            sqls.Add(sql);
+
+            sql = new DbSQL();
+            sql.SQLString = "insert into a_test (xm,nl) values ('ls', :nl)";
+            sql.DbParameters = new System.Data.Common.DbParameter[] { par };
+            sqls.Add(sql);
+
+            dbAccess.ExecuteSqlTran(1, sqls);
+        }
+
+        [TestMethod]
+        public void QueryDataSetTest()
+        {
+            IList<DbSQL> sqls = new List<DbSQL>();
+            DbSQL sql;
+            System.Data.Common.DbParameter par;
+            par = dbAccess.CreateParameter();
+            par.ParameterName = "nl";
+            par.DbType = System.Data.DbType.Int32;
+            par.Value = 10;
+
+            sql = new DbSQL();
+            sql.SQLString = "select * from a_test where nl=:nl";
+            sql.DbParameters = new System.Data.Common.DbParameter[] { par };
+            sqls.Add(sql);
+
+            sql = new DbSQL();
+            sql.SQLString = "select * from a_test where nl=:nl";
+            sql.DbParameters = new System.Data.Common.DbParameter[] { par };
+            sqls.Add(sql);
+
+            dbAccess.Query(sqls);
         }
 
         /// <summary>

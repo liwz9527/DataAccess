@@ -410,10 +410,11 @@ namespace Vic.Data
                 try
                 {
                     conn.Open();
-                    cmd = CreateCommand(conn);
                     trans = conn.BeginTransaction();
+                    cmd = CreateCommand(conn);
                     cmd.Transaction = trans;
                     cmd.CommandType = CommandType.Text;
+
                     for (int i = 0; i < sqls.Length; i++)
                     {
                         string strSql = sqls[i].ToString();
@@ -428,7 +429,6 @@ namespace Vic.Data
                         {
                             trans.Commit();
                             trans = conn.BeginTransaction();
-                            cmd.Transaction = trans;
                         }
                     }
                     trans.Commit();
@@ -480,10 +480,11 @@ namespace Vic.Data
                 try
                 {
                     conn.Open();
-                    cmd = CreateCommand(conn);
                     trans = conn.BeginTransaction();
+                    cmd = CreateCommand(conn);
                     cmd.Transaction = trans;
                     cmd.CommandType = CommandType.Text;
+
                     for (int i = 0; i < sqls.Count; i++)
                     {
                         DbSQL sql = sqls[i];
@@ -506,8 +507,9 @@ namespace Vic.Data
                         {
                             trans.Commit();
                             trans = conn.BeginTransaction();
-                            cmd.Transaction = trans;
                         }
+                        cmd.CommandText = "";
+                        cmd.Parameters.Clear();
                     }
                     trans.Commit();
                 }
@@ -568,8 +570,8 @@ namespace Vic.Data
                 try
                 {
                     conn.Open();
-                    cmd = CreateCommand(conn);
                     adp = CreateDataAdapter();
+                    cmd = CreateCommand(conn);
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = sql;
                     if (parameters != null && parameters.Count > 0)
@@ -614,8 +616,8 @@ namespace Vic.Data
                 try
                 {
                     conn.Open();
-                    cmd = CreateCommand(conn);
                     adp = CreateDataAdapter();
+                    cmd = CreateCommand(conn);
                     cmd.CommandType = CommandType.Text;
                     for (int i = 0; i < sqls.Length; i++)
                     {
@@ -672,9 +674,10 @@ namespace Vic.Data
                 try
                 {
                     conn.Open();
-                    cmd = CreateCommand(conn);
                     adp = CreateDataAdapter();
+                    cmd = CreateCommand(conn);
                     cmd.CommandType = CommandType.Text;
+
                     for (int i = 0; i < sqls.Count; i++)
                     {
                         DbSQL sql = sqls[i];
@@ -692,6 +695,8 @@ namespace Vic.Data
                             adp.SelectCommand = cmd;
                             adp.Fill(result, "Table" + i.ToString());
                         }
+                        cmd.CommandText = "";
+                        cmd.Parameters.Clear();
                     }
                 }
                 catch (DbException dbEx)
@@ -1523,6 +1528,10 @@ namespace Vic.Data
                         {
                             adp.Update(dataSet.Tables[i]);
                         }
+
+                        cmd.CommandText = "";
+                        cmd.Parameters.Clear();
+                        cmd.Dispose();
                     }
                 }
                 catch (DbException dbEx)
@@ -1659,6 +1668,10 @@ namespace Vic.Data
                         {
                             adp.Update(dataSet.Tables[i]);
                         }
+
+                        cmd.CommandText = "";
+                        cmd.Parameters.Clear();
+                        cmd.Dispose();
                     }
                     trans.Commit();
                 }
