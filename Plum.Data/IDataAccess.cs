@@ -374,6 +374,29 @@ namespace Vic.Data
         /// </summary>
         /// <param name="storedProcName">存储过程名称</param>
         /// <returns></returns>
+        void ExecProcedureNonQuery(string storedProcName);
+
+        /// <summary>
+        /// 执行存储过程,带参数
+        /// </summary>
+        /// <param name="storedProcName">存储过程名称</param>
+        /// <param name="parameters">存储过程的 DbParameter 类型参数</param>
+        /// <returns></returns>
+        void ExecProcedureNonQuery(string storedProcName, params DbParameter[] parameters);
+
+        /// <summary>
+        /// 执行存储过程,带参数
+        /// </summary>
+        /// <param name="storedProcName">存储过程名称</param>
+        /// <param name="parameters">存储过程的 DbParameter 类型参数</param>
+        /// <returns></returns>
+        void ExecProcedureNonQuery(string storedProcName, IList<DbParameter> parameters);
+
+        /// <summary>
+        /// 执行存储过程
+        /// </summary>
+        /// <param name="storedProcName">存储过程名称</param>
+        /// <returns></returns>
         DataSet ExecProcedure(string storedProcName);
 
         /// <summary>

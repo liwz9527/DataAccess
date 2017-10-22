@@ -1169,6 +1169,75 @@ namespace Vic.Data
         /// </summary>
         /// <param name="storedProcName">存储过程名称</param>
         /// <returns></returns>
+        public void ExecProcedureNonQuery(string storedProcName)
+        {
+            ExecProcedureNonQuery(storedProcName, new List<DbParameter>());
+        }
+
+        /// <summary>
+        /// 执行存储过程,带参数
+        /// </summary>
+        /// <param name="storedProcName">存储过程名称</param>
+        /// <param name="parameters">存储过程的 DbParameter 类型参数</param>
+        /// <returns></returns>
+        public void ExecProcedureNonQuery(string storedProcName, params DbParameter[] parameters)
+        {
+            if (parameters != null)
+                ExecProcedureNonQuery(storedProcName, parameters.ToList());
+            else
+                ExecProcedureNonQuery(storedProcName, new List<DbParameter>());
+        }
+
+        /// <summary>
+        /// 执行存储过程,带参数
+        /// </summary>
+        /// <param name="storedProcName">存储过程名称</param>
+        /// <param name="parameters">存储过程的 DbParameter 类型参数</param>
+        /// <returns></returns>
+        public void ExecProcedureNonQuery(string storedProcName, IList<DbParameter> parameters)
+        {
+            DataSet result = new DataSet();
+            using (DbConnection conn = CreateConnection())
+            {
+                DbCommand cmd = null;
+                DbDataAdapter adp = null;
+                try
+                {
+                    conn.Open();
+                    adp = CreateDataAdapter();
+                    cmd = CreateCommand(conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.CommandText = storedProcName;
+                    if (parameters != null && parameters.Count > 0)
+                    {
+                        foreach (DbParameter para in parameters)
+                        {
+                            cmd.Parameters.Add(para);
+                        }
+                    }
+                    cmd.ExecuteNonQuery();
+                }
+                catch (DbException dbEx)
+                {
+                    throw dbEx;
+                }
+                finally
+                {
+                    if (cmd != null)
+                        cmd.Dispose();
+                    if (adp != null)
+                        adp.Dispose();
+                }
+            }
+
+            this.parms = GetParametersValue(parameters);
+        }
+
+        /// <summary>
+        /// 执行存储过程
+        /// </summary>
+        /// <param name="storedProcName">存储过程名称</param>
+        /// <returns></returns>
         public DataSet ExecProcedure(string storedProcName)
         {
             return ExecProcedure(storedProcName, new List<DbParameter>());
