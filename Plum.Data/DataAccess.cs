@@ -296,6 +296,72 @@ namespace Vic.Data
             return obj;
         }
 
+        /// <summary>
+        /// 获取根据 DataTable 的 ExtendedProperties 中的设定或 TableName 属性生成的用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令
+        /// </summary>
+        /// <param name="dataTable">DataTable</param>
+        /// <returns></returns>
+        protected string GetSelectCommandForDbDataAdapterUpdate(DataTable dataTable)
+        {
+            if (dataTable == null)
+                return string.Empty;
+
+            string scrTableName = "";
+            if (dataTable.ExtendedProperties != null)
+            {
+                if (dataTable.ExtendedProperties.ContainsKey("SelectSqlForUpdate"))
+                {
+                    string sql = dataTable.ExtendedProperties["SelectSqlForUpdate"] as string;
+                    if (!string.IsNullOrEmpty(sql))
+                        return sql;
+                }
+
+                if (dataTable.ExtendedProperties.ContainsKey("ScrTableName"))
+                {
+                    scrTableName = dataTable.ExtendedProperties["ScrTableName"] as string;
+                }
+
+                if (string.IsNullOrEmpty(scrTableName))
+                {
+                    foreach (System.Collections.DictionaryEntry item in dataTable.ExtendedProperties)
+                    {
+                        string key = item.Key as string;
+                        if (key != null)
+                        {
+                            if (key.StartsWith("BaseTable."))
+                            {
+                                scrTableName = item.Value as string;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (string.IsNullOrEmpty(scrTableName))
+                {
+                    scrTableName = dataTable.TableName;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(scrTableName))
+            {
+                StringBuilder str = new StringBuilder();
+                str.Append("select");
+                for (int i = 0; i < dataTable.Columns.Count; i++)
+                {
+                    str.Append(" " + dataTable.Columns[i].ColumnName);
+                    if (i < dataTable.Columns.Count - 1)
+                        str.Append(",");
+                }
+
+                str.Append(" from " + scrTableName);
+                str.Append(" where 1 = 2");
+                return str.ToString();
+            }
+
+            return string.Empty;
+        }
+
         /// <summary>     
         /// 执行无返回数据集的SQL，返回受影响的行数。     
         /// </summary>     
@@ -582,6 +648,7 @@ namespace Vic.Data
                         }
                     }
                     adp.SelectCommand = cmd;
+                    adp.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                     adp.Fill(result);
                 }
                 catch (DbException dbEx)
@@ -626,6 +693,7 @@ namespace Vic.Data
                         {
                             cmd.CommandText = strSql;
                             adp.SelectCommand = cmd;
+                            adp.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                             adp.Fill(result, "Table" + i.ToString());
                         }
                     }
@@ -693,6 +761,7 @@ namespace Vic.Data
                                 }
                             }
                             adp.SelectCommand = cmd;
+                            adp.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                             adp.Fill(result, "Table" + i.ToString());
                         }
                         cmd.CommandText = "";
@@ -1148,7 +1217,7 @@ namespace Vic.Data
                     //result.Rows.Add(dr);
 
                     result.ImportRow(allRowsDt.Rows[i]);
-                }                
+                }
                 #endregion
             }
             catch (Exception ex)
@@ -1286,6 +1355,7 @@ namespace Vic.Data
                     }
                     cmd.ExecuteNonQuery();
                     adp.SelectCommand = cmd;
+                    adp.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                     adp.Fill(result);
                     if (result != null && result.Tables.Count == 0)
                         result = null;
@@ -1374,6 +1444,7 @@ namespace Vic.Data
                         {
                             cmd.CommandText = string.Format("select * from {0}", tableName);
                             adp.SelectCommand = cmd;
+                            adp.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                             adp.Fill(result, tableName);
                         }
                     }
@@ -1398,6 +1469,20 @@ namespace Vic.Data
 
             this.parms = GetParametersValue(parameters);
             return result;
+        }
+
+        /// <summary>
+        /// 更新数据库
+        /// </summary>
+        /// <param name="dataTable">DataTable，必须设置主键。
+        /// ExtendedProperties 属性中需要包含 "SelectSqlForUpdate(用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令)"、
+        /// "ScrTableName(源表名称)"、"BaseTable.n(由DbDataAdapter的Fill填充时自动生成的键值)三个特定键值中的其中一个，如没有设置则采用 TableName 属性值作为源表名称，
+        /// 优先级 SelectSqlForUpdate > ScrTableName > BaseTable.n > TableName"，键值名称区分大小写。
+        /// </param>
+        /// <returns></returns>
+        public void Update(DataTable dataTable)
+        {
+            Update(dataTable, GetSelectCommandForDbDataAdapterUpdate(dataTable), new List<DbParameter>());
         }
 
         /// <summary>
@@ -1435,6 +1520,17 @@ namespace Vic.Data
         /// <returns></returns>
         public void Update(DataTable dataTable, string sql, IList<DbParameter> parameters)
         {
+            /*************说明***********
+             * 关于通过 DataAdapter 的 Update 方法保存 DataTable,必须指定SelectCommand属性（Select 查询 Sql）
+                1、DataTable 不设 PrimaryKey 属性,Sql中有主键列可以保存;
+                2、Sql 中没有主键列，错误: 对于不返回任何键列信息的 SelectCommand，不支持 UpdateCommand 的动态 SQL 生成;
+                3、Sql 字段多于 DataTable 中的字段,错误: UpdateCommand 影响了预期 1 条记录中的 0 条;
+                4、Sql 字段少于 DataTable 中的字段可以保存;
+                5、Sql 字段与 DataTable 中的字段名不对应(顺序不一致除外),错误: UpdateCommand 影响了预期 1 条记录中的 0 条;
+                6、Sql 字段与 DataTable 中的字段顺序不一致可以保存;
+                7、Sql 中的Where条件不影响保存,可以用 1 = 2 来提高效率;
+            ***************************/
+
             using (DbConnection conn = CreateConnection())
             {
                 DbCommand cmd = null;
@@ -1489,7 +1585,64 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库
         /// </summary>
-        /// <param name="dataSet">DataSet，必须设置主键，多表时需要设置每个的TableName。</param>
+        /// <param name="dataSet">DataSet。
+        /// 集合中的每个 DataTable 的 ExtendedProperties 属性中需要包含 "SelectSqlForUpdate(用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令)"、
+        /// "ScrTableName(源表名称)"、"BaseTable.n(由DbDataAdapter的Fill填充时自动生成的键值)三个特定键值中的其中一个，如没有设置则采用 TableName 属性值作为源表名称，
+        /// 优先级 SelectSqlForUpdate > ScrTableName > BaseTable.n > TableName"，键值名称区分大小写。
+        /// </param>
+        /// <returns></returns>
+        public void Update(DataSet dataSet)
+        {
+            using (DbConnection conn = CreateConnection())
+            {
+                DbCommand cmd = null;
+                DbDataAdapter adp = null;
+                DbCommandBuilder cmbBuilder = null;
+
+                try
+                {
+                    conn.Open();
+                    adp = CreateDataAdapter();
+                    for (int i = 0; i < dataSet.Tables.Count; i++)
+                    {
+                        cmd = CreateCommand(conn);
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = GetSelectCommandForDbDataAdapterUpdate(dataSet.Tables[i]);
+                        adp.SelectCommand = cmd;
+                        cmbBuilder = CreateCommandBuilder();
+                        cmbBuilder.DataAdapter = adp;
+
+                        DbCommand inCmd = cmbBuilder.GetInsertCommand();
+                        DbCommand upCmd = cmbBuilder.GetUpdateCommand();
+                        DbCommand delCmd = cmbBuilder.GetDeleteCommand();
+
+                        //考虑并发
+                        lock (typeof(DataAccess))
+                        {
+                            adp.Update(dataSet.Tables[i]);
+                        }
+                    }
+                }
+                catch (DbException dbEx)
+                {
+                    throw dbEx;
+                }
+                finally
+                {
+                    if (cmbBuilder != null)
+                        cmbBuilder.Dispose();
+                    if (cmd != null)
+                        cmd.Dispose();
+                    if (adp != null)
+                        adp.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新数据库
+        /// </summary>
+        /// <param name="dataSet">DataSet</param>
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
         public void Update(DataSet dataSet, params string[] sqls)
@@ -1557,7 +1710,7 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库(带 DbParameter 参数)
         /// </summary>
-        /// <param name="dataSet">DataSet，必须设置主键，多表时需要设置每个的TableName。</param>
+        /// <param name="dataSet">DataSet。</param>
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
         public void Update(DataSet dataSet, IList<DbSQL> sqls)
@@ -1622,7 +1775,70 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库(事务)
         /// </summary>
-        /// <param name="dataSet">DataSet，必须设置主键，多表时需要设置每个的TableName。</param>
+        /// <param name="dataSet">DataSet。
+        /// 集合中的每个 DataTable 的 ExtendedProperties 属性中需要包含 "SelectSqlForUpdate(用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令)"、
+        /// "ScrTableName(源表名称)"、"BaseTable.n(由DbDataAdapter的Fill填充时自动生成的键值)三个特定键值中的其中一个，如没有设置则采用 TableName 属性值作为源表名称，
+        /// 优先级 SelectSqlForUpdate > ScrTableName > BaseTable.n > TableName"，键值名称区分大小写。
+        /// </param>
+        /// <returns></returns>
+        public void UpdateTran(DataSet dataSet)
+        {
+            using (DbConnection conn = CreateConnection())
+            {
+                DbCommand cmd = null;
+                DbDataAdapter adp = null;
+                DbCommandBuilder cmbBuilder = null;
+                DbTransaction trans = null;
+                try
+                {
+                    conn.Open();
+                    adp = CreateDataAdapter();
+                    trans = conn.BeginTransaction();
+                    for (int i = 0; i < dataSet.Tables.Count; i++)
+                    {
+                        cmd = conn.CreateCommand();
+                        cmd.CommandType = CommandType.Text;
+                        cmd.CommandText = GetSelectCommandForDbDataAdapterUpdate(dataSet.Tables[i]);
+                        adp.SelectCommand = cmd;
+                        cmbBuilder = CreateCommandBuilder();
+                        cmbBuilder.DataAdapter = adp;
+
+                        DbCommand inCmd = cmbBuilder.GetInsertCommand();
+                        DbCommand upCmd = cmbBuilder.GetUpdateCommand();
+                        DbCommand delCmd = cmbBuilder.GetDeleteCommand();
+
+                        //考虑并发
+                        lock (typeof(DataAccess))
+                        {
+                            adp.Update(dataSet.Tables[i]);
+                        }
+                    }
+                    trans.Commit();
+                }
+                catch (DbException dbEx)
+                {
+                    if (trans != null)
+                        trans.Rollback();
+                    throw dbEx;
+                }
+                finally
+                {
+                    if (trans != null)
+                        trans.Dispose();
+                    if (cmbBuilder != null)
+                        cmbBuilder.Dispose();
+                    if (cmd != null)
+                        cmd.Dispose();
+                    if (adp != null)
+                        adp.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新数据库(事务)
+        /// </summary>
+        /// <param name="dataSet">DataSet。</param>
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
         public void UpdateTran(DataSet dataSet, params string[] sqls)
@@ -1682,7 +1898,7 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库(事务,带 DbParameter 参数)
         /// </summary>
-        /// <param name="dataSet">DataSet，必须设置主键，多表时需要设置每个的TableName。</param>
+        /// <param name="dataSet">DataSet。</param>
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
         public void UpdateTran(DataSet dataSet, params DbSQL[] sqls)
@@ -1696,7 +1912,7 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库(事务,带 DbParameter 参数)
         /// </summary>
-        /// <param name="dataSet">DataSet，必须设置主键，多表时需要设置每个的TableName。</param>
+        /// <param name="dataSet">DataSet。</param>
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
         public void UpdateTran(DataSet dataSet, IList<DbSQL> sqls)

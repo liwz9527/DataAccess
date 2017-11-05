@@ -444,6 +444,17 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库
         /// </summary>
+        /// <param name="dataTable">DataTable，必须设置主键。
+        /// ExtendedProperties 属性中需要包含 "SelectSqlForUpdate(用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令)"、
+        /// "ScrTableName(源表名称)"、"BaseTable.n(由DbDataAdapter的Fill填充时自动生成的键值)三个特定键值中的其中一个，如没有设置则采用 TableName 属性值作为源表名称，
+        /// 优先级 SelectSqlForUpdate > ScrTableName > BaseTable.n > TableName"，键值名称区分大小写。
+        /// </param>
+        /// <returns></returns>
+        void Update(DataTable dataTable);
+
+        /// <summary>
+        /// 更新数据库
+        /// </summary>
         /// <param name="dataTable">DataTable，必须设置主键。</param>
         /// <param name="sql">Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
@@ -470,6 +481,17 @@ namespace Vic.Data
         /// <summary>
         /// 更新数据库
         /// </summary>
+        /// <param name="dataSet">DataSet。
+        /// 集合中的每个 DataTable 的 ExtendedProperties 属性中需要包含 "SelectSqlForUpdate(用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令)"、
+        /// "ScrTableName(源表名称)"、"BaseTable.n(由DbDataAdapter的Fill填充时自动生成的键值)三个特定键值中的其中一个，如没有设置则采用 TableName 属性值作为源表名称，
+        /// 优先级 SelectSqlForUpdate > ScrTableName > BaseTable.n > TableName"，键值名称区分大小写。
+        /// </param>
+        /// <returns></returns>
+        void Update(DataSet dataSet);
+
+        /// <summary>
+        /// 更新数据库
+        /// </summary>
         /// <param name="dataSet">DataSet，必须设置主键，多表时需要设置每个的TableName。</param>
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
@@ -490,6 +512,17 @@ namespace Vic.Data
         /// <param name="sqls">每个Table对应的SQL，必须包含主键列。</param>
         /// <returns></returns>
         void Update(DataSet dataSet, IList<DbSQL> sqls);
+
+        /// <summary>
+        /// 更新数据库(事务)
+        /// </summary>
+        /// <param name="dataSet">DataSet。
+        /// 集合中的每个 DataTable 的 ExtendedProperties 属性中需要包含 "SelectSqlForUpdate(用于 DbDataAdapter 调用 Update(DataTable) 方法的 SelectCommand 属性命令)"、
+        /// "ScrTableName(源表名称)"、"BaseTable.n(由DbDataAdapter的Fill填充时自动生成的键值)三个特定键值中的其中一个，如没有设置则采用 TableName 属性值作为源表名称，
+        /// 优先级 SelectSqlForUpdate > ScrTableName > BaseTable.n > TableName"，键值名称区分大小写。
+        /// </param>
+        /// <returns></returns>
+        void UpdateTran(DataSet dataSet);
 
         /// <summary>
         /// 更新数据库(事务)
