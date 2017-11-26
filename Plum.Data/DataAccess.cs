@@ -176,10 +176,9 @@ namespace Vic.Data
         {
             bool checkConn = false;
             exMessage = "";
-
-            using (DbConnection conn = CreateConnection())
+            try
             {
-                try
+                using (DbConnection conn = CreateConnection())
                 {
                     conn.Open();
                     if (conn.State == ConnectionState.Open)
@@ -187,10 +186,18 @@ namespace Vic.Data
                         checkConn = true;
                     }
                 }
-                catch (DbException dbEx)
-                {
-                    exMessage = dbEx.Message;
-                }
+            }
+            catch (DbException dbEx)
+            {
+                exMessage = dbEx.Message;
+            }
+            catch (ProviderTypeNoneException ex)
+            {
+                exMessage = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                exMessage = ex.Message;
             }
             return checkConn;
         }
