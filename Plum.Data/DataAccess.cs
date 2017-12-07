@@ -1360,7 +1360,7 @@ namespace Vic.Data
                             cmd.Parameters.Add(para);
                         }
                     }
-                    cmd.ExecuteNonQuery();
+                    //cmd.ExecuteNonQuery();
                     adp.SelectCommand = cmd;
                     adp.MissingSchemaAction = MissingSchemaAction.AddWithKey;
                     adp.Fill(result);
